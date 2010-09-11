@@ -1,5 +1,5 @@
 /*
- * ConfigTest
+ * SqlFilter
  *
  * Copyright (C) 2010  Jaroslav Merxbauer
  *
@@ -17,26 +17,14 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package notwa.test;
 
-import java.util.Collection;
-import notwa.common.Config;
-import notwa.common.ConnectionInfo;
+package notwa.sql;
 
 /**
  *
  * @author Jaroslav Merxbauer
  * @version %I% %G%
  */
-public class ConfigTest {
-
-    /**
-     * 
-     */
-    public ConfigTest() {
-        Collection<ConnectionInfo> cons = Config.getInstance().getConnecionStrings();
-        for (ConnectionInfo ci : cons) {
-            System.out.println(ci.compileConnectionString());
-        }
-    }
+public interface SqlFilter {
+    public String formatForSql();
 }

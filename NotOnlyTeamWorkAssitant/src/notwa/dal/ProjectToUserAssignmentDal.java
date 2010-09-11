@@ -26,12 +26,12 @@ import notwa.wom.User;
 import notwa.wom.AssignedUser;
 import notwa.wom.Context;
 import notwa.sql.Parameters;
-import notwa.sql.ParameterSet;
+import notwa.sql.SqlParameterSet;
 import notwa.sql.Sql;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import notwa.sql.Parameter;
+import notwa.sql.SqlParameter;
 
 /**
  * <code>ProjectToUserAssignmentDal</code> is a <code>DataAccessLayer</code>
@@ -61,12 +61,12 @@ public class ProjectToUserAssignmentDal extends DataAccessLayer<User, UserCollec
     protected String getSqlTemplate() {
         StringBuilder vanillaSql = new StringBuilder();
 
-        vanillaSql.append("SELECT   pua.user_id    AS user_id, ");
-        vanillaSql.append("         pua.project_id AS project_id ");
-        vanillaSql.append("FROM Project_User_Assignment pua ");
-        vanillaSql.append("JOIN Project p ");
-        vanillaSql.append("ON p.project_id = pua.project_id ");
-        vanillaSql.append("/** STATEMENT=WHERE;RELATION=AND;");
+        vanillaSql.append("SELECT   pua.user_id    AS user_id,\n");
+        vanillaSql.append("         pua.project_id AS project_id\n");
+        vanillaSql.append("FROM Project_User_Assignment pua\n");
+        vanillaSql.append("JOIN Project p\n");
+        vanillaSql.append("ON p.project_id = pua.project_id\n");
+        vanillaSql.append("/** STATEMENT=WHERE;");
         vanillaSql.append("        {column=pua.project_id;parameter=ProjectId;}");
         vanillaSql.append("**/");
 
@@ -83,8 +83,8 @@ public class ProjectToUserAssignmentDal extends DataAccessLayer<User, UserCollec
     }
 
     @Override
-    protected ParameterSet getPrimaryKeyParams(Object primaryKey) {
-        return new ParameterSet(new Parameter(Parameters.User.ID, primaryKey, Sql.Relation.EQUALTY));
+    protected SqlParameterSet getPrimaryKeyParams(Object primaryKey) {
+        return new SqlParameterSet(new SqlParameter(Parameters.User.ID, primaryKey, Sql.Relation.EQUALTY));
     }
 
     @Override

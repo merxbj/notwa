@@ -1,5 +1,5 @@
 /*
- * Test
+ * SqlFilterBuilder
  *
  * Copyright (C) 2010  Jaroslav Merxbauer
  *
@@ -17,22 +17,16 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package notwa.test;
+
+package notwa.sql;
 
 /**
  *
  * @author Jaroslav Merxbauer
  * @version %I% %G%
  */
-public class Test {
-
-    /**
-     * Entry point intended for testing purposes.
-     *
-     * @param args The command line arguments.
-     */
-    public static void main(String[] args) {
-        new SqlBuilderTest();
-    }
-
+public interface SqlFilterBuilder {
+    public void where(SqlFilter filter);
+    public void and(SqlFilter filter);
+    public void or(SqlFilter filter);
 }

@@ -22,8 +22,8 @@ import notwa.dal.WorkItemDal;
 import notwa.gui.components.JTableCellRenderer;
 import notwa.gui.components.KeyValueComboBox;
 import notwa.gui.datamodels.UserManagementModel;
-import notwa.sql.Parameter;
-import notwa.sql.ParameterSet;
+import notwa.sql.SqlParameter;
+import notwa.sql.SqlParameterSet;
 import notwa.sql.Parameters;
 import notwa.sql.Sql;
 import notwa.wom.Context;
@@ -169,9 +169,9 @@ public class UserManagement extends JDialog implements ActionListener, ListSelec
         }
     }
     
-    private ParameterSet getDefaultParameters(User user) {
-        return new ParameterSet( new Parameter[] { 
-            new Parameter(Parameters.WorkItem.ASSIGNED_USER, user.getId(), Sql.Relation.EQUALTY) });
+    private SqlParameterSet getDefaultParameters(User user) {
+        return new SqlParameterSet( new SqlParameter[] {
+            new SqlParameter(Parameters.WorkItem.ASSIGNED_USER, user.getId(), Sql.Relation.EQUALTY) });
     }
     
     @Override

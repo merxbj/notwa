@@ -35,8 +35,8 @@ import notwa.dal.WorkItemDal;
  */
 public class SqlBuilder {
     private StringBuilder sqltemplate;
-    private ParameterSet parameters;
-    private ArrayList<Statement> statements;
+    private SqlFilter filter;
+    private ArrayList<SqlStatement> statements;
     
     /**
      * The sole constructor expecting the actual sql template and the parameters
@@ -45,10 +45,21 @@ public class SqlBuilder {
      * @param template The SQL template.
      * @param parameters The SQL parameters.
      */
-    public SqlBuilder(String template, ParameterSet parameters) {
+    public SqlBuilder(String template, SqlParameterSet parameters) {
+        this(template, new SimpleSqlFilter(parameters, Sql.Logical.CONJUNCTION));
+    }
+
+    /**
+     * The sole constructor expecting the actual sql template and the parameters
+     * that are going to be factored into the template.
+     *
+     * @param template The SQL template.
+     * @param parameters The SQL parameters.
+     */
+    public SqlBuilder(String template, SqlFilter filter) {
         this.sqltemplate = new StringBuilder(template);
-        this.parameters = parameters;
-        this.statements = new ArrayList<Statement>();
+        this.filter = filter;
+        this.statements = new ArrayList<SqlStatement>();
     }
 
     /**
@@ -60,15 +71,11 @@ public class SqlBuilder {
     public String compileSql() {
         parseTemplate();
 
-        for (Parameter p : parameters) {
-            for (Statement s : statements) {
-                if (s.hasParameter(p.getName())) {
-                    s.appendRelation(p);
-                }
-            }
+        for (SqlStatement s : statements) {
+            s.applyFilter(filter);
         }
 
-        for (Statement s : statements) {
+        for (SqlStatement s : statements) {
             String statementIdentifier = String.format("<s#%d>", statements.indexOf(s));
             int statementStart = sqltemplate.indexOf(statementIdentifier);
             sqltemplate.replace(statementStart, statementStart + statementIdentifier.length(), s.compileStatement());
@@ -87,7 +94,7 @@ public class SqlBuilder {
         while (statementStart != -1) {
             statementEnd = sqltemplate.indexOf("**/", statementStart) + 3;
             if (statementEnd != -1) {
-                Statement s = new Statement();
+                SqlStatement s = new SqlStatement();
                 if (s.parse(sqltemplate.substring(statementStart, statementEnd))) {
                     statements.add(s);
                     sqltemplate.replace(statementStart, statementEnd, String.format("<s#%d>", statements.indexOf(s)));

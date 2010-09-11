@@ -20,14 +20,14 @@
 package notwa.dal;
 
 import java.sql.ResultSet;
+import java.util.HashMap;
 import notwa.common.ConnectionInfo;
 import notwa.logger.LoggingFacade;
 import notwa.wom.Context;
 import notwa.wom.BusinessObject;
 
-import java.util.Hashtable;
 import notwa.exception.DalException;
-import notwa.sql.ParameterSet;
+import notwa.sql.SqlParameterSet;
 import notwa.sql.SqlBuilder;
 import notwa.wom.BusinessObjectCollection;
 
@@ -56,7 +56,7 @@ import notwa.wom.BusinessObjectCollection;
  * @version %I% %G%
  */
 public abstract class DataAccessLayer<TObject extends BusinessObject, TCollection extends BusinessObjectCollection<TObject>> {
-    private static Hashtable<ConnectionInfo, DatabaseConnection> connections;
+    private static HashMap<ConnectionInfo, DatabaseConnection> connections;
 
     /**
      * The <code>ConnectionInfo</code> which is used to connect to the 
@@ -93,7 +93,7 @@ public abstract class DataAccessLayer<TObject extends BusinessObject, TCollectio
         this.currentContext = context;
 
         if (connections == null) {
-            connections = new Hashtable<ConnectionInfo, DatabaseConnection>();
+            connections = new HashMap<ConnectionInfo, DatabaseConnection>();
         }
         if ((ci != null) && !connections.containsKey(ci)) {
             connections.put(ci, new DatabaseConnection(ci));
@@ -118,20 +118,20 @@ public abstract class DataAccessLayer<TObject extends BusinessObject, TCollectio
      * @return The number of <code>BusinessObjects</code>s filled into the <code>Collection</code>.
      */
     public int fill(TCollection boc) {
-        return fill(boc, new ParameterSet());
+        return fill(boc, new SqlParameterSet());
     }
 
     /**
      * Fills the given <code>BusinessObjectCollection</code> with data based on 
-     * the given <code>ParameterSet</code>.
+     * the given <code>SqlParameterSet</code>.
      * @see Parameters
      *
      * @param boc The <code>BusinessObjectCollection</code> to fill.
-     * @param pc    The <code>ParameterSet</code> upon which the given collection
+     * @param pc    The <code>SqlParameterSet</code> upon which the given collection
      *              will be filled.
      * @return The number of <code>BusinessObject</code>s filled into the <code>Collection</code>.
      */
-    public int fill(TCollection boc, ParameterSet pc) {
+    public int fill(TCollection boc, SqlParameterSet pc) {
         String sql = getSqlTemplate();
         SqlBuilder sb = new SqlBuilder(sql, pc);
         try {
@@ -186,7 +186,7 @@ public abstract class DataAccessLayer<TObject extends BusinessObject, TCollectio
             return getBusinessObject(primaryKey);
         } else {
             String sql = getSqlTemplate();
-            ParameterSet ps = getPrimaryKeyParams(primaryKey);
+            SqlParameterSet ps = getPrimaryKeyParams(primaryKey);
             SqlBuilder sb = new SqlBuilder(sql, ps);
 
             try {
@@ -280,7 +280,7 @@ public abstract class DataAccessLayer<TObject extends BusinessObject, TCollectio
      * @param boc The <code>BusinessObjectCollection</code to be refreshed.
      */
     public void refresh(TCollection boc) {
-        refresh(boc, new ParameterSet());
+        refresh(boc, new SqlParameterSet());
     }
 
     /**
@@ -288,13 +288,13 @@ public abstract class DataAccessLayer<TObject extends BusinessObject, TCollectio
      * At first, it completely clears the given </code>BusinessObjectCollection</code>
      * by calling the {@link BusinessObjectCollection#shakeAllAway()}. Then it simply
      * refills the <code>BusinessObjectCollection</code> from the database taking
-     * in account the given <coded>ParameterSet</code>.
+     * in account the given <coded>SqlParameterSet</code>.
      *
      * @param boc The <code>BusinessObjectCollection</code to be refreshed.
-     * @param ps    The <code>ParameterSet</code> upon which the given collection
+     * @param ps    The <code>SqlParameterSet</code> upon which the given collection
      *              will be refreshed.
      */
-    public void refresh(TCollection boc, ParameterSet ps) {
+    public void refresh(TCollection boc, SqlParameterSet ps) {
         boc.shakeAllAway();
         fill(boc, ps);
     }
@@ -399,17 +399,17 @@ public abstract class DataAccessLayer<TObject extends BusinessObject, TCollectio
     protected abstract boolean isInCurrentContext(Object primaryKey) throws DalException;
 
     /**
-     * Builds the <code>ParameterSet</code> which will then identify the one and
+     * Builds the <code>SqlParameterSet</code> which will then identify the one and
      * only concrete <code>BusinessObject</code> when there is a need to query
      * such a <code>BusinessObject</code> from the database.
-     * <p>The concrete implementation shoudl know how exactly build the <code>ParameterSet</code>
+     * <p>The concrete implementation shoudl know how exactly build the <code>SqlParameterSet</code>
      * using the given primary key.</p>
      * @param primaryKey    The actuall primary key identyfying the concrete
      *                      implementation of <code>BusinessObject</code>.
-     * @return  The built <code>ParameterSet</code> which could then by used to
+     * @return  The built <code>SqlParameterSet</code> which could then by used to
      *          obtain the one and only <code>BusinessObject</code> from database.
      */
-    protected abstract ParameterSet getPrimaryKeyParams(Object primaryKey);
+    protected abstract SqlParameterSet getPrimaryKeyParams(Object primaryKey);
 
     /**
      * Updates the single row in the given <code>ResultSet</code> based on the
