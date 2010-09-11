@@ -1,5 +1,5 @@
 /*
- * Test
+ * SmartResultSet
  *
  * Copyright (C) 2010  Jaroslav Merxbauer
  *
@@ -17,22 +17,32 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package notwa.test;
+
+package notwa.dal;
+
+import java.sql.ResultSet;
+import notwa.sql.SqlFilter;
 
 /**
- *
+ * Smart <code>ResultSet</code> is aware of the SqlFilter that was responsible
+ * of its creation!
  * @author Jaroslav Merxbauer
  * @version %I% %G%
  */
-public class Test {
+public class SmartResultSet {
+    private ResultSet rs;
+    private SqlFilter filter;
 
-    /**
-     * Entry point intended for testing purposes.
-     *
-     * @param args The command line arguments.
-     */
-    public static void main(String[] args) {
-        new SqlBuilderTest();
+    public SmartResultSet(ResultSet rs, SqlFilter filter) {
+        this.rs = rs;
+        this.filter = filter;
     }
 
+    public SqlFilter getFilter() {
+        return filter;
+    }
+
+    public ResultSet getRs() {
+        return rs;
+    }
 }

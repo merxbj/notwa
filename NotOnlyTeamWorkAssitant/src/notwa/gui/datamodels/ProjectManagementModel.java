@@ -23,8 +23,8 @@ import java.util.Hashtable;
 import javax.swing.table.AbstractTableModel;
 
 import notwa.logger.LoggingFacade;
-import notwa.wom.Project;
-import notwa.wom.ProjectCollection;
+import notwa.wom.project.Project;
+import notwa.wom.project.ProjectCollection;
 
 /**
  *

@@ -19,6 +19,7 @@
  */
 package notwa.sql;
 
+import java.util.Arrays;
 import java.util.LinkedHashSet;
 
 /**
@@ -28,12 +29,12 @@ import java.util.LinkedHashSet;
  * @author Jaroslav Merxbauer
  * @version %I% %G%
  */
-public class ParameterSet extends LinkedHashSet<Parameter> {
+public class SqlParameterSet extends LinkedHashSet<SqlParameter> {
 
     /**
      * The simplest constructor initializing an empty set.
      */
-    public ParameterSet() {
+    public SqlParameterSet() {
         super();
     }
 
@@ -42,7 +43,7 @@ public class ParameterSet extends LinkedHashSet<Parameter> {
      *
      * @param param The single <code>Parameter</code> to be added to the set.
      */
-    public ParameterSet(Parameter param) {
+    public SqlParameterSet(SqlParameter param) {
         super();
         super.add(param);
     }
@@ -52,10 +53,8 @@ public class ParameterSet extends LinkedHashSet<Parameter> {
      *
      * @param params The array of <code>Parameters</code> to be added to the set.
      */
-    public ParameterSet(Parameter [] params) {
+    public SqlParameterSet(SqlParameter [] params) {
         super();
-        for (Parameter p : params) {
-            super.add(p);
-        }
+        super.addAll(Arrays.asList(params));
     }
 }

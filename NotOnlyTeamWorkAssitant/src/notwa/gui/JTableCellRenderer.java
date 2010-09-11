@@ -30,10 +30,10 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 
 import notwa.common.ColorManager;
-import notwa.wom.WorkItem;
-import notwa.wom.WorkItemCollection;
-import notwa.wom.WorkItemPriority;
-import notwa.wom.WorkItemStatus;
+import notwa.wom.workitem.WorkItemPriority;
+import notwa.wom.workitem.WorkItemStatus;
+import notwa.wom.workitem.WorkItem;
+import notwa.wom.workitem.WorkItemCollection;
 
 public class JTableCellRenderer implements TableCellRenderer
 {

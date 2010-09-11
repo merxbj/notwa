@@ -62,6 +62,8 @@ public class DatabaseConnection {
      *                      the database or accessing the ResultSet.
      */
     public ResultSet executeQuery(String query) throws SQLException {
+        LoggingFacade.getLogger().logDebug(query);
+
         /* Make sure that you are connected, otherwise try to reconnect */
         if (!isConnected()) {
             connect();
@@ -87,6 +89,7 @@ public class DatabaseConnection {
      *                      the database or accessing the ResultSet.
      */
     public <TOutput> TOutput executeScalar(String query) throws SQLException {
+        LoggingFacade.getLogger().logDebug(query);
 
         /* Make sure that you are connected, otherwise try to reconnect */
         if (!isConnected()) {

@@ -21,13 +21,12 @@ package notwa.dal;
 
 import notwa.common.ConnectionInfo;
 import notwa.exception.DalException;
-import notwa.sql.ParameterSet;
-import notwa.wom.ProjectCollection;
-import notwa.wom.Project;
-import notwa.wom.AssignedProject;
+import notwa.sql.SqlParameterSet;
+import notwa.wom.project.ProjectCollection;
+import notwa.wom.project.Project;
 import notwa.wom.Context;
 import notwa.sql.Parameters;
-import notwa.sql.Parameter;
+import notwa.sql.SqlParameter;
 import notwa.sql.Sql;
 
 import java.sql.ResultSet;
@@ -61,12 +60,12 @@ public class UserToProjectAssignmentDal extends DataAccessLayer<Project, Project
     protected String getSqlTemplate() {
         StringBuilder vanillaSql = new StringBuilder();
 
-        vanillaSql.append("SELECT   pua.project_id AS project_id, ");
-        vanillaSql.append("         pua.user_id    AS user_id ");
-        vanillaSql.append("FROM Project_User_Assignment pua ");
-        vanillaSql.append("JOIN User u ");
-        vanillaSql.append("ON u.user_id = pua.user_id ");
-        vanillaSql.append("/** STATEMENT=WHERE;RELATION=AND;");
+        vanillaSql.append("SELECT   pua.project_id AS project_id,\n");
+        vanillaSql.append("         pua.user_id    AS user_id\n");
+        vanillaSql.append("FROM Project_User_Assignment pua\n");
+        vanillaSql.append("JOIN User u\n");
+        vanillaSql.append("ON u.user_id = pua.user_id\n");
+        vanillaSql.append("/** STATEMENT=WHERE;");
         vanillaSql.append("        {column=pua.user_id;parameter=UserId;}");
         vanillaSql.append("**/");
 
@@ -83,8 +82,8 @@ public class UserToProjectAssignmentDal extends DataAccessLayer<Project, Project
     }
 
     @Override
-    protected ParameterSet getPrimaryKeyParams(Object primaryKey) {
-        return new ParameterSet(new Parameter(Parameters.Project.ID, primaryKey, Sql.Relation.EQUALTY));
+    protected SqlParameterSet getPrimaryKeyParams(Object primaryKey) {
+        return new SqlParameterSet(new SqlParameter(Parameters.Project.ID, primaryKey, Sql.Relation.EQUALTY));
     }
 
     @Override
@@ -118,13 +117,12 @@ public class UserToProjectAssignmentDal extends DataAccessLayer<Project, Project
 
     @Override
     protected void updateSingleRow(ResultSet rs, Project p) throws Exception {
-        /*
-         * We should always make project to user assignment update on assignment
-         * aware User!
-         */
-        AssignedProject ap = (AssignedProject) p;
-        rs.updateInt("user_id", ap.getUser().getId());
-        rs.updateInt("project_id", ap.getId());
+        int currUserId = rs.getInt("user_id");
+        if (currUserId == 0) {
+            throw new DalException("Updating project assignment without actual user found!");
+        }
+        rs.updateInt("user_id", currUserId);
+        rs.updateInt("project_id", p.getId());
     }
 
     @Override

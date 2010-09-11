@@ -42,7 +42,7 @@ import notwa.common.EventHandler;
 import notwa.security.Credentials;
 import notwa.security.SecurityEvent;
 import notwa.security.SecurityEventParams;
-import notwa.wom.WorkItem;
+import notwa.wom.workitem.WorkItem;
 
 
 public class MainLayoutLoader extends JComponent implements ActionListener, ChangeListener {

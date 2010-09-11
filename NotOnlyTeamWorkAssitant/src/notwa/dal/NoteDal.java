@@ -19,17 +19,17 @@
  */
 package notwa.dal;
 
-import notwa.wom.Note;
-import notwa.wom.NoteCollection;
-import notwa.wom.NotePrimaryKey;
+import notwa.wom.note.Note;
+import notwa.wom.note.NoteCollection;
+import notwa.wom.note.NotePrimaryKey;
 import notwa.common.ConnectionInfo;
-import notwa.sql.ParameterSet;
-import notwa.sql.Parameter;
+import notwa.sql.SqlParameterSet;
+import notwa.sql.SqlParameter;
 import notwa.sql.Parameters;
 import notwa.sql.Sql;
 import notwa.exception.DalException;
 import notwa.wom.Context;
-import notwa.wom.User;
+import notwa.wom.user.User;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -61,12 +61,12 @@ public class NoteDal extends DataAccessLayer<Note, NoteCollection> {
     protected String getSqlTemplate() {
         StringBuilder vanillaSql = new StringBuilder();
 
-        vanillaSql.append("SELECT   note_id, ");
-        vanillaSql.append("         work_item_id, ");
-        vanillaSql.append("         author_user_id, ");
-        vanillaSql.append("         note ");
-        vanillaSql.append("FROM Work_Item_Note ");
-        vanillaSql.append("/** STATEMENT=WHERE;RELATION=AND;");
+        vanillaSql.append("SELECT   note_id,\n");
+        vanillaSql.append("         work_item_id,\n");
+        vanillaSql.append("         author_user_id,\n");
+        vanillaSql.append("         note\n");
+        vanillaSql.append("FROM Work_Item_Note\n");
+        vanillaSql.append("/** STATEMENT=WHERE;");
         vanillaSql.append("        {column=note_id;parameter=NoteId;}");
         vanillaSql.append("        {column=work_item_id;parameter=NoteWorkItemId;}");
         vanillaSql.append("        {column=author_user_id;parameter=NoteAuthorUserId;}");
@@ -85,11 +85,11 @@ public class NoteDal extends DataAccessLayer<Note, NoteCollection> {
     }
 
     @Override
-    protected ParameterSet getPrimaryKeyParams(Object primaryKey) {
+    protected SqlParameterSet getPrimaryKeyParams(Object primaryKey) {
         NotePrimaryKey npk = (NotePrimaryKey) primaryKey;
-        Parameter noteId = new Parameter(Parameters.Note.ID, npk.getNoteId(), Sql.Relation.EQUALTY);
-        Parameter workItemId = new Parameter(Parameters.Note.WORK_ITEM_ID, npk.getWorkItemId(), Sql.Relation.EQUALTY);
-        return new ParameterSet(new Parameter[] {noteId, workItemId});
+        SqlParameter noteId = new SqlParameter(Parameters.Note.ID, npk.getNoteId(), Sql.Relation.EQUALTY);
+        SqlParameter workItemId = new SqlParameter(Parameters.Note.WORK_ITEM_ID, npk.getWorkItemId(), Sql.Relation.EQUALTY);
+        return new SqlParameterSet(new SqlParameter[] {noteId, workItemId});
     }
 
     @Override
@@ -130,7 +130,8 @@ public class NoteDal extends DataAccessLayer<Note, NoteCollection> {
     }
 
     @Override
-    protected void updateSingleRow(ResultSet rs, Note n) throws Exception {
+    protected void updateSingleRow(SmartResultSet srs, Note n) throws Exception {
+        ResultSet rs = srs.getRs();
         rs.updateInt("note_id", n.getId().getNoteId());
         rs.updateInt("work_item_id", n.getId().getWorkItemId());
         rs.updateInt("author_user_id", n.getAuthor().getId());

@@ -17,9 +17,16 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package notwa.wom;
+package notwa.wom.workitem;
 
+import notwa.wom.workitem.WorkItemPriority;
+import notwa.wom.workitem.WorkItemStatus;
+import notwa.wom.user.User;
 import java.util.Date;
+import notwa.wom.BusinessObject;
+import notwa.wom.Context;
+import notwa.wom.note.NoteCollection;
+import notwa.wom.project.Project;
 
 /**
  * <code>WorkItem</code> represents a single work item which is the main object

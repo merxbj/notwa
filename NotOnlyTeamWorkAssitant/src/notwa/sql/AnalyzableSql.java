@@ -1,5 +1,5 @@
 /*
- * ConfigTest
+ * AnalyzableSql
  *
  * Copyright (C) 2010  Jaroslav Merxbauer
  *
@@ -17,26 +17,20 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package notwa.test;
 
-import java.util.Collection;
-import notwa.common.Config;
-import notwa.common.ConnectionInfo;
+package notwa.sql;
 
+// TODO: <MERXBJ> Comment this precisely!
 /**
- *
+ * This is interface implemented by the Visitable class (Visitor pattern)
  * @author Jaroslav Merxbauer
- * @version %I% %G%
+ * @authoer %I% %G%
  */
-public class ConfigTest {
-
+public interface AnalyzableSql {
+    
     /**
      * 
+     * @param analyzer
      */
-    public ConfigTest() {
-        Collection<ConnectionInfo> cons = Config.getInstance().getConnecionStrings();
-        for (ConnectionInfo ci : cons) {
-            System.out.println(ci.compileConnectionString());
-        }
-    }
+    public void provideAnalizableData(SqlAnalyzer analyzer);
 }

@@ -33,8 +33,8 @@ import notwa.gui.components.JTableCellRenderer;
 import notwa.gui.datamodels.ColumnSettings;
 import notwa.gui.datamodels.WorkItemlModel;
 
-import notwa.wom.WorkItem;
-import notwa.wom.WorkItemCollection;
+import notwa.wom.workitem.WorkItem;
+import notwa.wom.workitem.WorkItemCollection;
 
 public class WorkItemTable extends JComponent implements ListSelectionListener {
 

@@ -1,5 +1,5 @@
 /*
- * Test
+ * SqlAnalyzer
  *
  * Copyright (C) 2010  Jaroslav Merxbauer
  *
@@ -17,22 +17,26 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package notwa.test;
 
+package notwa.sql;
+
+// TODO: <MERXBJ> Comment this precisely!
 /**
- *
+ * This is interface implmented by the Visitor class (Visitor pattern).
  * @author Jaroslav Merxbauer
- * @version %I% %G%
+ * @authoer %I% %G%
  */
-public class Test {
+public interface SqlAnalyzer {
 
     /**
-     * Entry point intended for testing purposes.
-     *
-     * @param args The command line arguments.
+     * Analyzes the legacy <code>SimpleSqlFilter</code> data.
+     * @param filter The actual filter to be analyzed.
      */
-    public static void main(String[] args) {
-        new SqlBuilderTest();
-    }
+    public void analyzeSimpleSqlFilter(SimpleSqlFilter filter);
 
+    /**
+     * Analyzes the prefered <code>ComlexSqlFilter</code>.
+     * @param filter The actual filter to be analyzed.
+     */
+    public void analyzeComplexSqlFiter(ComplexSqlFilter filter);
 }

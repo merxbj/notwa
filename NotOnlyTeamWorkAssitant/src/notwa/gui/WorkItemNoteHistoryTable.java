@@ -31,8 +31,8 @@ import notwa.gui.components.JTableCellRenderer;
 import notwa.gui.components.JTextAreaRenderer;
 import notwa.gui.datamodels.NoteHistoryModel;
 
-import notwa.wom.NoteCollection;
-import notwa.wom.WorkItem;
+import notwa.wom.note.NoteCollection;
+import notwa.wom.workitem.WorkItem;
 
 public class WorkItemNoteHistoryTable extends JComponent {
     private NoteHistoryModel nhTableModel;

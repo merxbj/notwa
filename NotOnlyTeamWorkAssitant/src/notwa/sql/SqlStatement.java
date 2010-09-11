@@ -1,5 +1,5 @@
 /*
- * Statement
+ * SqlStatement
  *
  * Copyright (C) 2010  Jaroslav Merxbauer
  *
@@ -22,28 +22,25 @@ package notwa.sql;
 import notwa.logger.LoggingFacade;
 import java.util.HashMap;
 import java.util.StringTokenizer;
-import java.sql.Timestamp;
 
 /**
  * This <code>class</code> represents a single parameter placeholders statement
  * present in the SQL template.
- * This <code>Statement</code> should be than provided with the parameter collection
+ * This <code>SqlStatement</code> should be than provided with the parameter collection
  * and it will produce the built SQL to be a part of the related SQL template.
  *
  * @author Jaroslav Merxbauer
  * @version %I% %G%
  */
-public class Statement {
-    private String type;
-    private String innerRelation;
+public class SqlStatement {
+    private String connectWith;
     private HashMap<String,String> mappings;
     private StringBuilder statement;
-    private String nextKeyword;
 
     /**
      * The sole, parameter-less, constructor, initializing the class members.
      */
-    public Statement() {
+    public SqlStatement() {
         statement = new StringBuilder();
         mappings = new HashMap<String, String>();
     }
@@ -55,15 +52,14 @@ public class Statement {
      * its surroundings (It is the opening WHERE? Or continues it as AND? Or or?)
      * Than it creates parameter name to column name mappings, to be able to compile
      * the final result which should replace the parameter name with the actual
-     * value found within the <code>Parameter</code>.</p>
+     * value found within the <code>SqlParameter</code>.</p>
      *
      * @param rawStatement The raw statement.
      * @return  <code>true</code> if the parsing process completes successfully,
      *          <code>false</code> otherwise.
      */
     public boolean parse(String rawStatement) {
-        type = rawStatement.substring(rawStatement.indexOf("=") + 1, rawStatement.indexOf(";")).trim();
-        innerRelation = rawStatement.substring(rawStatement.indexOf("=", rawStatement.indexOf("=") + 1) + 1, rawStatement.indexOf(";", rawStatement.indexOf(";") + 1)).trim();
+        connectWith = rawStatement.substring(rawStatement.indexOf("=") + 1, rawStatement.indexOf(";")).trim();
 
         try {
             StringTokenizer relations = new StringTokenizer(rawStatement, "{}");
@@ -86,7 +82,6 @@ public class Statement {
                     }
                 }
             }
-            nextKeyword = type;
         } catch (Exception ex) {
             LoggingFacade.handleException(ex);
             return false;
@@ -96,7 +91,7 @@ public class Statement {
 
     /**
      * Returns the final SQL Query result built from the statement given at the
-     * begining by mixing it with the actual <code>Parameter</code>s.
+     * begining by mixing it with the actual <code>SqlParameter</code>s.
      *
      * @return The SQL Query part of the parent sql template.
      */
@@ -105,57 +100,27 @@ public class Statement {
     }
 
     /**
-     * Makes sure that this <code>Statement</code> does have the definition for
-     * the <code>Parameter</code> identified by the given name.
-     *
-     * @param name The name of the parameter.
-     * @return  <code>true</code> if this <code>Statement</code> knows the given
-     *          parameter name, <code>false</code> otherwise.
-     */
-    public boolean hasParameter(String name) {
-        return mappings.containsKey(name);
-    }
-
-    /**
-     * Appends the given <code>Parameter</code> to this <code>Statement</code>
+     * Appends the given <code>SqlParameter</code> to this <code>SqlStatement</code>
      * itteratively building the resulting SQL part.
      *
      * @param parameter The parameter where the value and the actual relation will
      *                  be found.
      */
-    public void appendRelation(Parameter parameter) {
-        statement.append(nextKeyword);
-        statement.append(" ");
-        statement.append(mappings.get(parameter.getName()));
-        statement.append(" ");
-        statement.append(parameter.getRelation());
-        statement.append(" ");
-        statement.append(formatValueForSql(parameter));
-        nextKeyword = " " + innerRelation;
-    }
+    public void applyFilter(SqlFilter filter) {
 
-    /**
-     * Formats the value in the given parameter for the SQL Query. This actually
-     * means that the <code>String</code> or the <code>Timestamp</code> will be
-     * surrounded with quotas.
-     * 
-     * @param p The parameter which values will be well-formated.
-     * @return The well-formated value.
-     */
-    private String formatValueForSql(Parameter p) {
-        StringBuilder sb = new StringBuilder();
-        Object o = p.getValue();
-        if ((o instanceof String) || (o instanceof Timestamp)) {
-            sb.append("'");
-            if (o instanceof Timestamp) {
-                sb.append(((Timestamp) o).toString());
-            } else {
-                sb.append((String) o);
-            }
-            sb.append("'");
-        } else {
-            sb.append(o);
+        String builtFilter = filter.formatForSql();
+
+        /**
+         * Make sure there is any filter to append, otherwise don't dare to append
+         * connection keyword! Standalon where doesn't make SQL Server happy ...
+         */
+        if (builtFilter.isEmpty()) {
+            return;
         }
-        return sb.toString();
+
+        TemplateResolver resolver = new TemplateResolver(this.mappings);
+        statement.append(connectWith);
+        statement.append(" ");
+        statement.append(resolver.resolve(builtFilter));
     }
 }

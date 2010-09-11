@@ -19,6 +19,11 @@
  */
 package notwa.wom;
 
+import notwa.wom.note.Note;
+import notwa.wom.note.NotePrimaryKey;
+import notwa.wom.project.Project;
+import notwa.wom.workitem.WorkItem;
+import notwa.wom.user.User;
 import java.util.Hashtable;
 
 /**

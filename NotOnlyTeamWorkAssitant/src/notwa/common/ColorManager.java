@@ -21,8 +21,8 @@ package notwa.common;
 
 import java.awt.Color;
 
-import notwa.wom.WorkItemPriority;
-import notwa.wom.WorkItemStatus;
+import notwa.wom.workitem.WorkItemPriority;
+import notwa.wom.workitem.WorkItemStatus;
 
 /**
  * Centralized color management, all style coloring should be here for better

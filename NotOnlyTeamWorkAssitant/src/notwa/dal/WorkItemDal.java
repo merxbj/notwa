@@ -19,9 +19,16 @@
  */
 package notwa.dal;
 
-import notwa.sql.ParameterSet;
+import notwa.sql.SqlParameterSet;
+import notwa.wom.note.NoteCollection;
+import notwa.wom.project.Project;
+import notwa.wom.workitem.WorkItem;
+import notwa.wom.workitem.WorkItemCollection;
+import notwa.wom.workitem.WorkItemPriority;
+import notwa.wom.workitem.WorkItemStatus;
+import notwa.wom.user.User;
 import notwa.sql.Parameters;
-import notwa.sql.Parameter;
+import notwa.sql.SqlParameter;
 import notwa.sql.Sql;
 import notwa.wom.*;
 import notwa.exception.DalException;
@@ -58,19 +65,18 @@ public class WorkItemDal extends DataAccessLayer<WorkItem, WorkItemCollection> {
     @Override
     protected String getSqlTemplate() {
         StringBuilder vanillaSql = new StringBuilder();
-
-        vanillaSql.append("SELECT   work_item_id, ");
-        vanillaSql.append("         assigned_user_id, ");
-        vanillaSql.append("         status_id, ");
-        vanillaSql.append("         project_id, ");
-        vanillaSql.append("         parent_work_item_id, ");
-        vanillaSql.append("         subject, ");
-        vanillaSql.append("         working_priority, ");
-        vanillaSql.append("         description, ");
-        vanillaSql.append("         expected_timestamp, ");
-        vanillaSql.append("         last_modified_timestamp ");
-        vanillaSql.append("FROM Work_Item ");
-        vanillaSql.append("/** STATEMENT=WHERE;RELATION=AND;");
+        vanillaSql.append("SELECT   work_item_id,\n");
+        vanillaSql.append("         assigned_user_id,\n");
+        vanillaSql.append("         status_id,\n");
+        vanillaSql.append("         project_id,\n");
+        vanillaSql.append("         parent_work_item_id,\n");
+        vanillaSql.append("         subject,\n");
+        vanillaSql.append("         working_priority,\n");
+        vanillaSql.append("         description,\n");
+        vanillaSql.append("         expected_timestamp,\n");
+        vanillaSql.append("         last_modified_timestamp\n");
+        vanillaSql.append("FROM Work_Item\n");
+        vanillaSql.append("/** STATEMENT=WHERE;");
         vanillaSql.append("        {column=work_item_id;parameter=WorkItemId;}");
         vanillaSql.append("        {column=status_id;parameter=WorkItemStatusId;}");
         vanillaSql.append("        {column=working_priority;parameter=WorkItemPriorityId;}");
@@ -91,8 +97,8 @@ public class WorkItemDal extends DataAccessLayer<WorkItem, WorkItemCollection> {
     }
 
     @Override
-    protected ParameterSet getPrimaryKeyParams(Object primaryKey) {
-        return new ParameterSet(new Parameter(Parameters.WorkItem.ID, primaryKey, Sql.Relation.EQUALTY));
+    protected SqlParameterSet getPrimaryKeyParams(Object primaryKey) {
+        return new SqlParameterSet(new SqlParameter(Parameters.WorkItem.ID, primaryKey, Sql.Relation.EQUALTY));
     }
 
     @Override
@@ -120,7 +126,7 @@ public class WorkItemDal extends DataAccessLayer<WorkItem, WorkItemCollection> {
 
             NoteDal noteDal = new NoteDal(ci, currentContext);
             NoteCollection nc = new NoteCollection(currentContext);
-            noteDal.fill(nc, new ParameterSet(new Parameter(Parameters.Note.WORK_ITEM_ID, workItemId, Sql.Relation.EQUALTY)));
+            noteDal.fill(nc, new SqlParameterSet(new SqlParameter(Parameters.Note.WORK_ITEM_ID, workItemId, Sql.Relation.EQUALTY)));
 
             ProjectDal projectDal = new ProjectDal(ci, currentContext);
             Project project = projectDal.get(rs.getInt("project_id"));
@@ -148,7 +154,8 @@ public class WorkItemDal extends DataAccessLayer<WorkItem, WorkItemCollection> {
     }
 
     @Override
-    protected void updateSingleRow(ResultSet rs, WorkItem wi) throws Exception {
+    protected void updateSingleRow(SmartResultSet srs, WorkItem wi) throws Exception {
+        ResultSet rs = srs.getRs();
         Timestamp now = new Timestamp(Calendar.getInstance().getTimeInMillis());
 
         rs.updateInt("work_item_id", wi.getId());

@@ -21,13 +21,13 @@ package notwa.dal;
 
 import notwa.common.ConnectionInfo;
 import notwa.logger.LoggingFacade;
-import notwa.sql.ParameterSet;
-import notwa.sql.Parameter;
+import notwa.sql.SqlParameterSet;
+import notwa.sql.SqlParameter;
 import notwa.sql.Parameters;
 import notwa.sql.Sql;
-import notwa.wom.User;
-import notwa.wom.UserCollection;
-import notwa.wom.ProjectCollection;
+import notwa.wom.user.User;
+import notwa.wom.user.UserCollection;
+import notwa.wom.project.ProjectCollection;
 import notwa.wom.Context;
 import notwa.exception.DalException;
 
@@ -62,13 +62,13 @@ public class UserDal extends DataAccessLayer<User, UserCollection> {
     protected String getSqlTemplate() {
         StringBuilder vanillaSql = new StringBuilder();
 
-        vanillaSql.append("SELECT   user_id, ");
-        vanillaSql.append("         login, ");
-        vanillaSql.append("         password, ");
-        vanillaSql.append("         first_name, ");
-        vanillaSql.append("         last_name ");
-        vanillaSql.append("FROM User ");
-        vanillaSql.append("/** STATEMENT=WHERE;RELATION=AND;");
+        vanillaSql.append("SELECT   user_id,\n");
+        vanillaSql.append("         login,\n");
+        vanillaSql.append("         password,\n");
+        vanillaSql.append("         first_name,\n");
+        vanillaSql.append("         last_name\n");
+        vanillaSql.append("FROM User\n");
+        vanillaSql.append("/** STATEMENT=WHERE;");
         vanillaSql.append("        {column=user_id;parameter=UserId;}");
         vanillaSql.append("        {column=login;parameter=UserLogin;}");
         vanillaSql.append("        {column=password;parameter=UserPassword;}");
@@ -89,8 +89,8 @@ public class UserDal extends DataAccessLayer<User, UserCollection> {
     }
 
     @Override
-    protected ParameterSet getPrimaryKeyParams(Object primaryKey) {
-        return new ParameterSet(new Parameter(Parameters.User.ID, primaryKey, Sql.Relation.EQUALTY));
+    protected SqlParameterSet getPrimaryKeyParams(Object primaryKey) {
+        return new SqlParameterSet(new SqlParameter(Parameters.User.ID, primaryKey, Sql.Relation.EQUALTY));
     }
     
     @Override
@@ -142,12 +142,13 @@ public class UserDal extends DataAccessLayer<User, UserCollection> {
     private ProjectCollection getAssignedProjectCollection(int userId) throws DalException {
         ProjectCollection pc = new ProjectCollection(currentContext);
         UserToProjectAssignmentDal utpaDal = new UserToProjectAssignmentDal(ci, currentContext);
-        utpaDal.fill(pc, new ParameterSet(new Parameter(Parameters.User.ID, userId, Sql.Relation.EQUALTY)));
+        utpaDal.fill(pc, new SqlParameterSet(new SqlParameter(Parameters.User.ID, userId, Sql.Relation.EQUALTY)));
         return pc;
     }
 
     @Override
-    protected void updateSingleRow(ResultSet rs, User u) throws Exception {
+    protected void updateSingleRow(SmartResultSet srs, User u) throws Exception {
+        ResultSet rs = srs.getRs();
         rs.updateInt("user_id", u.getId());
         rs.updateString("first_name", u.getFirstName());
         rs.updateString("last_name", u.getLastName());

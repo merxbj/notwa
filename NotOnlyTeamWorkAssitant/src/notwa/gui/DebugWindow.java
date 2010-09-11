@@ -23,6 +23,7 @@ package notwa.gui;
 import java.awt.HeadlessException;
 import java.util.LinkedList;
 import javax.swing.JFrame;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 /**
@@ -33,16 +34,18 @@ import javax.swing.JTextArea;
 public class DebugWindow extends JFrame {
 
     private JTextArea log;
+    JScrollPane logScrollPane;
     private LinkedList<String> messages;
 
     public DebugWindow() throws HeadlessException {
         this.log = new JTextArea();
         this.messages = new LinkedList<String>();
+        this.logScrollPane = new JScrollPane(log);
 
-        this.log.setSize(750, 500);
+        this.logScrollPane.setSize(700, 550);
 
-        this.setSize(750,500);
-        this.add(log);
+        this.setSize(750,550);
+        this.add(logScrollPane);
     }
 
     public void appendMessage(String message) {

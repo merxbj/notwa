@@ -17,10 +17,14 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package notwa.wom;
+package notwa.wom.user;
 
 import notwa.exception.ContextException;
 import notwa.security.Credentials;
+import notwa.wom.BusinessObject;
+import notwa.wom.Context;
+import notwa.wom.project.Project;
+import notwa.wom.project.ProjectCollection;
 
 /**
  * <code>User</code> represents a single user using this application.
@@ -229,10 +233,7 @@ public class User extends BusinessObject implements Comparable<User>, Cloneable 
      *                          match to the <code>AssignedProject</code>s collection.
      */
     public void setAssignedProjects(ProjectCollection assignedProjects) throws ContextException {
-        this.assignedProjects = new ProjectCollection(currentContext, assignedProjects.getResultSet());
-        for (Project p : assignedProjects) {
-            this.assignedProjects.add(new AssignedProject(p, this));
-        }
+        this.assignedProjects = assignedProjects;
     }
 
     /**
@@ -249,7 +250,7 @@ public class User extends BusinessObject implements Comparable<User>, Cloneable 
             return false;
         }
 
-        return this.assignedProjects.add(new AssignedProject(assignedProject, this));
+        return this.assignedProjects.add(assignedProject);
     }
 
     /**

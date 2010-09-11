@@ -49,14 +49,14 @@ import notwa.gui.components.KeyValueComboBox;
 import notwa.logger.LoggingFacade;
 import notwa.security.Credentials;
 import notwa.wom.Context;
-import notwa.wom.Project;
-import notwa.wom.ProjectCollection;
-import notwa.wom.User;
-import notwa.wom.UserCollection;
-import notwa.wom.WorkItem;
-import notwa.wom.WorkItemCollection;
-import notwa.wom.WorkItemPriority;
-import notwa.wom.WorkItemStatus;
+import notwa.wom.project.Project;
+import notwa.wom.project.ProjectCollection;
+import notwa.wom.user.User;
+import notwa.wom.user.UserCollection;
+import notwa.wom.workitem.WorkItem;
+import notwa.wom.workitem.WorkItemCollection;
+import notwa.wom.workitem.WorkItemPriority;
+import notwa.wom.workitem.WorkItemStatus;
  
 public class WorkItemEditor extends JDialog implements ActionListener {
     private KeyValueComboBox<Project> projects;

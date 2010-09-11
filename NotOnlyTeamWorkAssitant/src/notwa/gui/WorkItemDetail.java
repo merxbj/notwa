@@ -44,14 +44,14 @@ import notwa.dal.NoteDal;
 import notwa.dal.WorkItemDal;
 import notwa.gui.components.KeyValueComboBox;
 import notwa.logger.LoggingFacade;
-import notwa.wom.Note;
-import notwa.wom.NoteCollection;
-import notwa.wom.Project;
-import notwa.wom.User;
-import notwa.wom.UserCollection;
-import notwa.wom.WorkItem;
-import notwa.wom.WorkItemPriority;
-import notwa.wom.WorkItemStatus;
+import notwa.wom.note.Note;
+import notwa.wom.note.NoteCollection;
+import notwa.wom.project.Project;
+import notwa.wom.user.User;
+import notwa.wom.user.UserCollection;
+import notwa.wom.workitem.WorkItem;
+import notwa.wom.workitem.WorkItemPriority;
+import notwa.wom.workitem.WorkItemStatus;
 
 public class WorkItemDetail extends WorkItemDetailLayout implements ActionListener {
     private JButton save,addNote;

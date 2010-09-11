@@ -20,13 +20,13 @@
 package notwa.dal;
 
 import notwa.common.ConnectionInfo;
-import notwa.sql.ParameterSet;
-import notwa.wom.Project;
-import notwa.wom.ProjectCollection;
+import notwa.sql.SqlParameterSet;
+import notwa.wom.project.Project;
+import notwa.wom.project.ProjectCollection;
 import notwa.exception.DalException;
 import notwa.wom.Context;
-import notwa.sql.Parameter;
-import notwa.wom.UserCollection;
+import notwa.sql.SqlParameter;
+import notwa.wom.user.UserCollection;
 import notwa.sql.Parameters;
 import notwa.sql.Sql;
 
@@ -61,10 +61,10 @@ public class ProjectDal extends DataAccessLayer<Project, ProjectCollection> {
     protected String getSqlTemplate() {
         StringBuilder vanillaSql = new StringBuilder();
 
-        vanillaSql.append("SELECT   project_id, ");
-        vanillaSql.append("         name ");
-        vanillaSql.append("FROM Project ");
-        vanillaSql.append("/** STATEMENT=WHERE;RELATION=AND;");
+        vanillaSql.append("SELECT   project_id,\n");
+        vanillaSql.append("         name\n");
+        vanillaSql.append("FROM Project\n");
+        vanillaSql.append("/** STATEMENT=WHERE;");
         vanillaSql.append("        {column=project_id;parameter=ProjectId;}");
         vanillaSql.append("        {column=name;parameter=ProjectName;}");
         vanillaSql.append("**/");
@@ -82,8 +82,8 @@ public class ProjectDal extends DataAccessLayer<Project, ProjectCollection> {
     }
 
     @Override
-    protected ParameterSet getPrimaryKeyParams(Object primaryKey) {
-        return new ParameterSet(new Parameter(Parameters.Project.ID, primaryKey, Sql.Relation.EQUALTY));
+    protected SqlParameterSet getPrimaryKeyParams(Object primaryKey) {
+        return new SqlParameterSet(new SqlParameter(Parameters.Project.ID, primaryKey, Sql.Relation.EQUALTY));
     }
 
     @Override
@@ -123,12 +123,13 @@ public class ProjectDal extends DataAccessLayer<Project, ProjectCollection> {
     private UserCollection getAssignedUserCollection(int projectId) throws DalException {
         UserCollection uc = new UserCollection(currentContext);
         ProjectToUserAssignmentDal ptuaDal = new ProjectToUserAssignmentDal(ci, currentContext);
-        ptuaDal.fill(uc, new ParameterSet(new Parameter(Parameters.Project.ID, projectId, Sql.Relation.EQUALTY)));
+        ptuaDal.fill(uc, new SqlParameterSet(new SqlParameter(Parameters.Project.ID, projectId, Sql.Relation.EQUALTY)));
         return uc;
     }
     
     @Override
-    protected void updateSingleRow(ResultSet rs, Project p) throws Exception {
+    protected void updateSingleRow(SmartResultSet srs, Project p) throws Exception {
+        ResultSet rs = srs.getRs();
         rs.updateInt("project_id", p.getId());
         rs.updateString("name", p.getName());
     }
