@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+	<xs:element name="UpdateScript">
+		<xs:complexType>
+			<xs:attribute name="name" type="xs:string" use="required" />
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="UpdateScripts">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="UpdateScript" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="ExecuteAlways">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="UpdateScript" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+
+	<xs:element name="DatabaseUpgrade">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="UpdateScripts" maxOccurs="1" minOccurs="1" />
+				<xs:element ref="ExecuteAlways" maxOccurs="1" minOccurs="1" />
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	
+</xs:schema>

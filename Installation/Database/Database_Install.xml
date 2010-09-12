@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DatabaseUpgrade>
+	
+	<UpdateScripts>
+	
+		<!-- Base scripts for the initial database structure -->
+		<UpdateScript name="./initial_scripts/Create_Database.sql" />
+		<UpdateScript name="./initial_scripts/Create_Database_Upgrade.sql" />
+		<UpdateScript name="./initial_scripts/Create_Project.sql" />
+		<UpdateScript name="./initial_scripts/Create_User.sql" />
+		<UpdateScript name="./initial_scripts/Create_Project_User_Assigment.sql" />
+		<UpdateScript name="./initial_scripts/Create_Work_Item.sql" />
+		<UpdateScript name="./initial_scripts/Create_Work_Item_Note.sql" />
+		
+		<!-- Version based scripts as soon as versioning will be established -->
+		
+	</UpdateScripts>
+	
+	<!-- Place to containg data that needs to be always in the database. -->
+	<ExecuteAlways/>
+
+</DatabaseUpgrade>
