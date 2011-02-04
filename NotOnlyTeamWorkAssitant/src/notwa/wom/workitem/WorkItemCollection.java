@@ -19,8 +19,8 @@
  */
 package notwa.wom.workitem;
 
-import java.sql.ResultSet;
 import java.util.Collections;
+import notwa.dal.SmartResultSet;
 import notwa.exception.DeveloperException;
 import notwa.wom.BusinessObjectCollection;
 import notwa.wom.Context;
@@ -61,7 +61,7 @@ public class WorkItemCollection extends BusinessObjectCollection<WorkItem> {
      * @param context The current <code>Context</code>.
      * @param resultSet The originating <code>ResultSet</code>.
      */
-    public WorkItemCollection(Context context, ResultSet resultSet) {
+    public WorkItemCollection(Context context, SmartResultSet resultSet) {
         super(context, resultSet);
     }
 

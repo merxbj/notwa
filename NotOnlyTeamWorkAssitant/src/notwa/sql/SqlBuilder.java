@@ -45,7 +45,7 @@ public class SqlBuilder {
      * @param template The SQL template.
      * @param parameters The SQL parameters.
      */
-    public SqlBuilder(String template, SqlFilter filter) {
+    public SqlBuilder(String template, SqlParameterSet parameters) {
         this(template, new SimpleSqlFilter(parameters, Sql.Logical.CONJUNCTION));
     }
 

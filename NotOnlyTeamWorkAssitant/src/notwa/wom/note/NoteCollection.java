@@ -19,10 +19,9 @@
  */
 package notwa.wom.note;
 
-import notwa.wom.note.NotePrimaryKey;
-import java.sql.ResultSet;
 import java.util.Collections;
 import java.util.Hashtable;
+import notwa.dal.SmartResultSet;
 import notwa.exception.DeveloperException;
 import notwa.wom.BusinessObjectCollection;
 import notwa.wom.Context;
@@ -63,7 +62,7 @@ public class NoteCollection extends BusinessObjectCollection<Note> {
      * @param context The current <code>Context</code>.
      * @param resultSet The originating <code>ResultSet</code>.
      */
-    public NoteCollection(Context context, ResultSet resultSet) {
+    public NoteCollection(Context context, SmartResultSet resultSet) {
         super(context, resultSet);
     }
 

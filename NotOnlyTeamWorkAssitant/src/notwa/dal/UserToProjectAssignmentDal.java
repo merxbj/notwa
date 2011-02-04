@@ -116,13 +116,14 @@ public class UserToProjectAssignmentDal extends DataAccessLayer<Project, Project
     }
 
     @Override
-    protected void updateSingleRow(ResultSet rs, Project p) throws Exception {
-        int currUserId = rs.getInt("user_id");
+    protected void updateSingleRow(SmartResultSet rs, Project p) throws Exception {
+        ResultSet res = rs.getRs();
+        int currUserId = res.getInt("user_id");
         if (currUserId == 0) {
             throw new DalException("Updating project assignment without actual user found!");
         }
-        rs.updateInt("user_id", currUserId);
-        rs.updateInt("project_id", p.getId());
+        res.updateInt("user_id", currUserId);
+        res.updateInt("project_id", p.getId());
     }
 
     @Override
