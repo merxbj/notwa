@@ -1,5 +1,5 @@
 /*
- * Parameter
+ * SqlParameter
  *
  * Copyright (C) 2010  Jaroslav Merxbauer
  *
@@ -19,6 +19,8 @@
  */
 package notwa.sql;
 
+import java.sql.Timestamp;
+
 /**
  * The <code>class</code> representing the single sql parameter which is build
  * from:
@@ -34,20 +36,20 @@ package notwa.sql;
  * @author Jaroslav Merxbauer
  * @version %I% %G%
  */
-public class Parameter {
+public class SqlParameter implements SqlFilter {
     private String name;
     private Object value;
     private String relation;
     
     /**
      * The sole constructor allowing to set all of the properties of valid 
-     * <code>Parameter</code>.
+     * <code>SqlParameter</code>.
      *
      * @param name The name of the parameter.
      * @param value The value of the parameter.
      * @param relation The relation between the value and the name.
      */
-    public Parameter(String name, Object value, String relation) {
+    public SqlParameter(String name, Object value, String relation) {
         this.name = name;
         this.value = value;
         this.relation = relation;
@@ -61,7 +63,7 @@ public class Parameter {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final Parameter other = (Parameter) obj;
+        final SqlParameter other = (SqlParameter) obj;
         if ((this.name == null) ? (other.name != null) : !this.name.equals(other.name)) {
             return false;
         }
@@ -131,5 +133,38 @@ public class Parameter {
      */
     public void setRelation(String relation) {
         this.relation = relation;
+    }
+
+    @Override
+    public String formatForSql() {
+        StringBuilder builder = new StringBuilder("(");
+        builder.append("${").append(this.name).append("} ");
+        builder.append(this.relation).append(" ");
+        builder.append(formatValueForSql());
+        return builder.append(")").toString();
+    }
+
+    /**
+     * Formats the value in the given parameter for the SQL Query. This actually
+     * means that the <code>String</code> or the <code>Timestamp</code> will be
+     * surrounded with quotas.
+     *
+     * @param p The parameter which values will be well-formated.
+     * @return The well-formated value.
+     */
+    private String formatValueForSql() {
+        StringBuilder sb = new StringBuilder();
+        if ((this.value instanceof String) || (this.value instanceof Timestamp)) {
+            sb.append("'");
+            if (this.value instanceof Timestamp) {
+                sb.append(((Timestamp) this.value).toString());
+            } else {
+                sb.append((String) this.value);
+            }
+            sb.append("'");
+        } else {
+            sb.append(this.value);
+        }
+        return sb.toString();
     }
 }

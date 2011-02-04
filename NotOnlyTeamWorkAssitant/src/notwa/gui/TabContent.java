@@ -31,8 +31,8 @@ import notwa.common.ConnectionInfo;
 import notwa.common.EventHandler;
 import notwa.dal.WorkItemDal;
 import notwa.security.Credentials;
-import notwa.sql.Parameter;
-import notwa.sql.ParameterSet;
+import notwa.sql.SqlParameter;
+import notwa.sql.SqlParameterSet;
 import notwa.sql.Parameters;
 import notwa.sql.Sql;
 import notwa.wom.Context;
@@ -46,7 +46,7 @@ public class TabContent extends JPanel implements ActionListener {
     private WorkItemDal dal;
     private Context currentContext;
     private WorkItemCollection wic;
-    private ParameterSet ps;
+    private SqlParameterSet ps;
     private WorkItemTable wiTable;
     private EventHandler<GuiEvent> guiHandler;
     private Credentials currentUser;
@@ -55,11 +55,11 @@ public class TabContent extends JPanel implements ActionListener {
         init(ci, user, getDefaultParameters(user));
     }
 
-    public TabContent(ConnectionInfo ci, Credentials user, ParameterSet ps) {
+    public TabContent(ConnectionInfo ci, Credentials user, SqlParameterSet ps) {
         init(ci, user, ps);
     }
     
-    public void init(ConnectionInfo ci, Credentials user, ParameterSet ps) {
+    public void init(ConnectionInfo ci, Credentials user, SqlParameterSet ps) {
         this.ps = ps;
         this.ci = ci;
         
@@ -153,10 +153,10 @@ public class TabContent extends JPanel implements ActionListener {
         }
     }
 
-    private ParameterSet getDefaultParameters(Credentials user) {
-        return new ParameterSet( new Parameter[] { 
-            new Parameter(Parameters.WorkItem.ASSIGNED_USER, user.getUserId(), Sql.Relation.EQUALTY),
-            new Parameter(Parameters.WorkItem.STATUS, WorkItemStatus.CLOSED.getValue(), Sql.Relation.NOT_EQUALS),
-            new Parameter(Parameters.WorkItem.STATUS, WorkItemStatus.VERIFIED.getValue(), Sql.Relation.NOT_EQUALS)});
+    private SqlParameterSet getDefaultParameters(Credentials user) {
+        return new SqlParameterSet( new SqlParameter[] {
+            new SqlParameter(Parameters.WorkItem.ASSIGNED_USER, user.getUserId(), Sql.Relation.EQUALTY),
+            new SqlParameter(Parameters.WorkItem.STATUS, WorkItemStatus.CLOSED.getValue(), Sql.Relation.NOT_EQUALS),
+            new SqlParameter(Parameters.WorkItem.STATUS, WorkItemStatus.VERIFIED.getValue(), Sql.Relation.NOT_EQUALS)});
     }
 }
