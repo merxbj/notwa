@@ -37,7 +37,7 @@ public class SqlBuilder {
     private StringBuilder sqltemplate;
     private SqlFilter filter;
     private ArrayList<SqlStatement> statements;
-    
+
     /**
      * The sole constructor expecting the actual sql template and the parameters
      * that are going to be factored into the template.
@@ -45,7 +45,7 @@ public class SqlBuilder {
      * @param template The SQL template.
      * @param parameters The SQL parameters.
      */
-    public SqlBuilder(String template, SqlParameterSet parameters) {
+    public SqlBuilder(String template, SqlFilter filter) {
         this(template, new SimpleSqlFilter(parameters, Sql.Logical.CONJUNCTION));
     }
 

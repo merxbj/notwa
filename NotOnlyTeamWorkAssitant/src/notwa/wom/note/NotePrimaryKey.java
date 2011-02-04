@@ -17,7 +17,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package notwa.wom;
+package notwa.wom.note;
 
 /**
  * Class representing a composite primary key of the <code>Note</code>. The primary

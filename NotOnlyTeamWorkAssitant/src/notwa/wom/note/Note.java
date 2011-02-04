@@ -17,7 +17,12 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package notwa.wom;
+package notwa.wom.note;
+
+import notwa.wom.BusinessObject;
+import notwa.wom.Context;
+import notwa.wom.workitem.WorkItem;
+import notwa.wom.user.User;
 
 /**
  * <code>Note</code> represents a single note taken within its parrent {@link WorkItem}>.

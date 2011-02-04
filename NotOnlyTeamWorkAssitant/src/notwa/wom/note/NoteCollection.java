@@ -1,5 +1,5 @@
 /*
- * WorkItemCollection
+ * NoteCollection
  *
  * Copyright (C) 2010  Jaroslav Merxbauer
  *
@@ -17,38 +17,42 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package notwa.wom;
+package notwa.wom.note;
 
+import notwa.wom.note.NotePrimaryKey;
 import java.sql.ResultSet;
 import java.util.Collections;
+import java.util.Hashtable;
 import notwa.exception.DeveloperException;
+import notwa.wom.BusinessObjectCollection;
+import notwa.wom.Context;
 
 /**
  * This class represents a concrete implmenetation of <code>BusinessObjectCollection</code>
- * keeping and maintaining the <code>WorkItem</code>s.
- *
+ * keeping and maintaining the <code>Note</code>s.
+ * 
  * @author Jaroslav Merxbauer
  * @version %I% %G%
  */
-public class WorkItemCollection extends BusinessObjectCollection<WorkItem> {
+public class NoteCollection extends BusinessObjectCollection<Note> {
 
-    private static int nextWorkItemId = 1000000;
+    private static Hashtable<Integer, Integer> nextWorkItemNoteId = new Hashtable<Integer, Integer>() ;
 
     /**
      * The default constructor setting the current <code>Context</code> and <code>
      * ResultSet</code> to <code>null</code>.
      */
-    public WorkItemCollection() {
+    public NoteCollection() {
         super(null, null);
     }
 
     /**
-     * The constructor setting the current <code>Context</code> according to the 
+     * The constructor seting the current <code>Context</code> according to the 
      * given value and <code>ResultSet</code> to <code>null</code>.
      *
      * @param context The current <code>Context</code>.
      */
-    public WorkItemCollection(Context context) {
+    public NoteCollection(Context context) {
         super(context, null);
     }
 
@@ -59,29 +63,38 @@ public class WorkItemCollection extends BusinessObjectCollection<WorkItem> {
      * @param context The current <code>Context</code>.
      * @param resultSet The originating <code>ResultSet</code>.
      */
-    public WorkItemCollection(Context context, ResultSet resultSet) {
+    public NoteCollection(Context context, ResultSet resultSet) {
         super(context, resultSet);
     }
 
     @Override
-    public WorkItem getByPrimaryKey(Object primaryKey) throws DeveloperException {
-        int workItemIndex;
+    public Note getByPrimaryKey(Object primaryKey) throws DeveloperException {
+        int noteIndex;
         try {
             Collections.sort(this);
-            workItemIndex = Collections.binarySearch(this, new WorkItem((Integer) primaryKey));
-            if (workItemIndex >= 0) {
-                return super.get(workItemIndex);
+            NotePrimaryKey npk = (NotePrimaryKey) primaryKey;
+            noteIndex = Collections.binarySearch(this, new Note(npk));
+            if (noteIndex >= 0) {
+                return super.get(noteIndex);
             } else {
                 return null;
             }
         } catch (ClassCastException ccex) {
-            throw new DeveloperException("Developer haven't provided correct comparing and equaling methods for WorkItem!", ccex);
+            throw new DeveloperException("Developer haven't provided correct comparing and equaling methods for Note!", ccex);
         }
     }
 
     @Override
-    protected void acquireUniqeIdentifier(WorkItem wi) {
-        wi.setUniqeIdentifier(nextWorkItemId++);
+    protected void acquireUniqeIdentifier(Note n) {
+        int workItemId = n.getId().getWorkItemId();
+        if (nextWorkItemNoteId.containsKey(workItemId)) {
+            Integer nextNoteId = nextWorkItemNoteId.get(workItemId);
+            n.getId().setNoteId(nextNoteId);
+            nextWorkItemNoteId.put(workItemId, ++nextNoteId);
+        } else {
+            Integer nextNoteId = 1000000;
+            n.getId().setNoteId(nextNoteId++);
+            nextWorkItemNoteId.put(workItemId, nextNoteId);
+        }
     }
-
 }

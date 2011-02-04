@@ -107,9 +107,20 @@ public class SqlStatement {
      *                  be found.
      */
     public void applyFilter(SqlFilter filter) {
+
+        String builtFilter = filter.formatForSql();
+
+        /**
+         * Make sure there is any filter to append, otherwise don't dare to append
+         * connection keyword! Standalon where doesn't make SQL Server happy ...
+         */
+        if (builtFilter.isEmpty()) {
+            return;
+        }
+
         TemplateResolver resolver = new TemplateResolver(this.mappings);
         statement.append(connectWith);
         statement.append(" ");
-        statement.append(resolver.resolve(filter.formatForSql()));
+        statement.append(resolver.resolve(builtFilter));
     }
 }

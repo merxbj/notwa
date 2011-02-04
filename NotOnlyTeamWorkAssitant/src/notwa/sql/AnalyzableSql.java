@@ -1,5 +1,5 @@
 /*
- * SqlFilter
+ * AnalyzableSql
  *
  * Copyright (C) 2010  Jaroslav Merxbauer
  *
@@ -20,11 +20,17 @@
 
 package notwa.sql;
 
+// TODO: <MERXBJ> Comment this precisely!
 /**
- *
+ * This is interface implemented by the Visitable class (Visitor pattern)
  * @author Jaroslav Merxbauer
- * @version %I% %G%
+ * @authoer %I% %G%
  */
-public interface SqlFilter {
-    public String formatForSql();
+public interface AnalyzableSql {
+    
+    /**
+     * 
+     * @param analyzer
+     */
+    public void provideAnalizableData(SqlAnalyzer analyzer);
 }

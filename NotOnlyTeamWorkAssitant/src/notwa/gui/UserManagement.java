@@ -27,10 +27,10 @@ import notwa.sql.SqlParameterSet;
 import notwa.sql.Parameters;
 import notwa.sql.Sql;
 import notwa.wom.Context;
-import notwa.wom.User;
-import notwa.wom.UserCollection;
-import notwa.wom.WorkItem;
-import notwa.wom.WorkItemCollection;
+import notwa.wom.user.User;
+import notwa.wom.user.UserCollection;
+import notwa.wom.workitem.WorkItem;
+import notwa.wom.workitem.WorkItemCollection;
 
 public class UserManagement extends JDialog implements ActionListener, ListSelectionListener {
 

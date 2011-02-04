@@ -20,6 +20,13 @@
 package notwa.dal;
 
 import notwa.sql.SqlParameterSet;
+import notwa.wom.note.NoteCollection;
+import notwa.wom.project.Project;
+import notwa.wom.workitem.WorkItem;
+import notwa.wom.workitem.WorkItemCollection;
+import notwa.wom.workitem.WorkItemPriority;
+import notwa.wom.workitem.WorkItemStatus;
+import notwa.wom.user.User;
 import notwa.sql.Parameters;
 import notwa.sql.SqlParameter;
 import notwa.sql.Sql;
@@ -147,7 +154,8 @@ public class WorkItemDal extends DataAccessLayer<WorkItem, WorkItemCollection> {
     }
 
     @Override
-    protected void updateSingleRow(ResultSet rs, WorkItem wi) throws Exception {
+    protected void updateSingleRow(SmartResultSet srs, WorkItem wi) throws Exception {
+        ResultSet rs = srs.getRs();
         Timestamp now = new Timestamp(Calendar.getInstance().getTimeInMillis());
 
         rs.updateInt("work_item_id", wi.getId());

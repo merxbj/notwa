@@ -17,11 +17,13 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package notwa.wom;
+package notwa.wom.project;
 
 import java.sql.ResultSet;
 import java.util.Collections;
 import notwa.exception.DeveloperException;
+import notwa.wom.BusinessObjectCollection;
+import notwa.wom.Context;
 
 /**
  * This class represents a concrete implmenetation of <code>BusinessObjectCollection</code>

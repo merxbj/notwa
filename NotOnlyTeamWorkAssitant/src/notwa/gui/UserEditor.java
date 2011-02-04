@@ -31,7 +31,7 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import notwa.gui.components.JTextFieldLimit;
-import notwa.wom.User;
+import notwa.wom.user.User;
 
 /**
  * User editor is used to create new or edit existing user.

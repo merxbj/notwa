@@ -28,7 +28,7 @@ import javax.swing.JComponent;
 import javax.swing.JTabbedPane;
 
 import notwa.common.EventHandler;
-import notwa.wom.WorkItem;
+import notwa.wom.workitem.WorkItem;
 
 public class WorkItemDetailLayout extends JComponent implements ActionListener {
     private JTabbedPane detailTabs;

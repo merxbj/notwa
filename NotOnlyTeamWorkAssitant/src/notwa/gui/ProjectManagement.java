@@ -22,8 +22,8 @@ import notwa.dal.ProjectDal;
 import notwa.gui.components.JTableCellRenderer;
 import notwa.gui.datamodels.ProjectManagementModel;
 import notwa.wom.Context;
-import notwa.wom.Project;
-import notwa.wom.ProjectCollection;
+import notwa.wom.project.Project;
+import notwa.wom.project.ProjectCollection;
 
 public class ProjectManagement extends JDialog implements ActionListener, ListSelectionListener {
     private ConnectionInfo ci;

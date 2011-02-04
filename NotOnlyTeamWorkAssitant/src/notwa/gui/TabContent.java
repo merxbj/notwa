@@ -37,8 +37,8 @@ import notwa.sql.Parameters;
 import notwa.sql.Sql;
 import notwa.wom.Context;
 import notwa.wom.ContextManager;
-import notwa.wom.WorkItemCollection;
-import notwa.wom.WorkItemStatus;
+import notwa.wom.workitem.WorkItemCollection;
+import notwa.wom.workitem.WorkItemStatus;
 
 public class TabContent extends JPanel implements ActionListener {
     JButton addButton,showHideButton,showDepButton;

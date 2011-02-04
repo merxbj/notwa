@@ -1,5 +1,5 @@
 /*
- * UserCollection
+ * WorkItemCollection
  *
  * Copyright (C) 2010  Jaroslav Merxbauer
  *
@@ -17,28 +17,30 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-package notwa.wom;
+package notwa.wom.workitem;
 
 import java.sql.ResultSet;
 import java.util.Collections;
 import notwa.exception.DeveloperException;
+import notwa.wom.BusinessObjectCollection;
+import notwa.wom.Context;
 
 /**
  * This class represents a concrete implmenetation of <code>BusinessObjectCollection</code>
- * keeping and maintaining the <code>Users</code>s.
+ * keeping and maintaining the <code>WorkItem</code>s.
  *
  * @author Jaroslav Merxbauer
  * @version %I% %G%
  */
-public class UserCollection extends BusinessObjectCollection<User> {
+public class WorkItemCollection extends BusinessObjectCollection<WorkItem> {
 
-    private static int nextUserId = 1000000;
+    private static int nextWorkItemId = 1000000;
 
     /**
      * The default constructor setting the current <code>Context</code> and <code>
      * ResultSet</code> to <code>null</code>.
      */
-    public UserCollection() {
+    public WorkItemCollection() {
         super(null, null);
     }
 
@@ -48,7 +50,7 @@ public class UserCollection extends BusinessObjectCollection<User> {
      *
      * @param context The current <code>Context</code>.
      */
-    public UserCollection(Context context) {
+    public WorkItemCollection(Context context) {
         super(context, null);
     }
 
@@ -59,28 +61,29 @@ public class UserCollection extends BusinessObjectCollection<User> {
      * @param context The current <code>Context</code>.
      * @param resultSet The originating <code>ResultSet</code>.
      */
-    public UserCollection(Context context, ResultSet resultSet) {
+    public WorkItemCollection(Context context, ResultSet resultSet) {
         super(context, resultSet);
     }
 
     @Override
-    public User getByPrimaryKey(Object primaryKey) throws DeveloperException {
-        int userIndex;
+    public WorkItem getByPrimaryKey(Object primaryKey) throws DeveloperException {
+        int workItemIndex;
         try {
             Collections.sort(this);
-            userIndex = Collections.binarySearch(this, new User((Integer) primaryKey));
-            if (userIndex >= 0) {
-                return super.get(userIndex);
+            workItemIndex = Collections.binarySearch(this, new WorkItem((Integer) primaryKey));
+            if (workItemIndex >= 0) {
+                return super.get(workItemIndex);
             } else {
                 return null;
             }
         } catch (ClassCastException ccex) {
-            throw new DeveloperException("Developer haven't provided correct comparing and equaling methods for User!", ccex);
+            throw new DeveloperException("Developer haven't provided correct comparing and equaling methods for WorkItem!", ccex);
         }
     }
 
     @Override
-    protected void acquireUniqeIdentifier(User u) {
-        u.setUniqeIdentifier(nextUserId++);
+    protected void acquireUniqeIdentifier(WorkItem wi) {
+        wi.setUniqeIdentifier(nextWorkItemId++);
     }
+
 }

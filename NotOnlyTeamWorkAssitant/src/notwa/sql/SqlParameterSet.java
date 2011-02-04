@@ -19,6 +19,7 @@
  */
 package notwa.sql;
 
+import java.util.Arrays;
 import java.util.LinkedHashSet;
 
 /**
@@ -54,8 +55,6 @@ public class SqlParameterSet extends LinkedHashSet<SqlParameter> {
      */
     public SqlParameterSet(SqlParameter [] params) {
         super();
-        for (SqlParameter p : params) {
-            super.add(p);
-        }
+        super.addAll(Arrays.asList(params));
     }
 }

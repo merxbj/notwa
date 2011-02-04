@@ -21,9 +21,8 @@ package notwa.dal;
 
 import notwa.common.ConnectionInfo;
 import notwa.exception.DalException;
-import notwa.wom.UserCollection;
-import notwa.wom.User;
-import notwa.wom.AssignedUser;
+import notwa.wom.user.UserCollection;
+import notwa.wom.user.User;
 import notwa.wom.Context;
 import notwa.sql.Parameters;
 import notwa.sql.SqlParameterSet;
@@ -31,7 +30,10 @@ import notwa.sql.Sql;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import notwa.sql.AnalyzableSql;
+import notwa.sql.SqlFilter;
 import notwa.sql.SqlParameter;
+import notwa.sql.analyzers.ParameterValueAnalyzer;
 
 /**
  * <code>ProjectToUserAssignmentDal</code> is a <code>DataAccessLayer</code>
@@ -117,14 +119,37 @@ public class ProjectToUserAssignmentDal extends DataAccessLayer<User, UserCollec
     }
 
     @Override
-    protected void updateSingleRow(ResultSet rs, User u) throws Exception {
-        /*
-         * We should always make project to user assignment update on assignment
-         * aware User!
+    protected void updateSingleRow(SmartResultSet srs, User u) throws Exception {
+
+        /**
+         * Get the origin filter which is responsible for the result we are updating.
+         * Make sure that this filter is analyzable, otherwise we are screwed!
          */
-        AssignedUser au = (AssignedUser) u;
-        rs.updateInt("project_id", au.getProject().getId());
-        rs.updateInt("user_id", au.getId());
+        SqlFilter filter = srs.getFilter();
+        ParameterValueAnalyzer analyzer = new ParameterValueAnalyzer();
+        if (!(srs instanceof AnalyzableSql)) {
+            throw new DalException("Expected Analyzable SqlFilter in ProjectToUserAssignmentDal::updateSingleRow!");
+        }
+
+        /**
+         * We have analyzable sql! Lets instantiate the analyzer and analyze it!
+         */
+        AnalyzableSql asql = (AnalyzableSql) filter;
+        asql.provideAnalizableData(analyzer);
+
+        /**
+         * Ask the analyzer for the project_id parameter value which should indicate
+         * whose project assignments are being updated!
+         * This is particulary useful when we are assigning a new user. The 
+         */
+        Integer currentProjectId = analyzer.getParameterValue(Parameters.Project.ID);
+        if (currentProjectId == 0) {
+            throw new DalException("Unexpected project_id 0 when updating user assigned to it!");
+        }
+
+        ResultSet rs = srs.getRs();
+        rs.updateInt("project_id", currentProjectId);
+        rs.updateInt("user_id", u.getId());
     }
 
     @Override

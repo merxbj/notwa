@@ -22,9 +22,8 @@ package notwa.dal;
 import notwa.common.ConnectionInfo;
 import notwa.exception.DalException;
 import notwa.sql.SqlParameterSet;
-import notwa.wom.ProjectCollection;
-import notwa.wom.Project;
-import notwa.wom.AssignedProject;
+import notwa.wom.project.ProjectCollection;
+import notwa.wom.project.Project;
 import notwa.wom.Context;
 import notwa.sql.Parameters;
 import notwa.sql.SqlParameter;
@@ -118,13 +117,12 @@ public class UserToProjectAssignmentDal extends DataAccessLayer<Project, Project
 
     @Override
     protected void updateSingleRow(ResultSet rs, Project p) throws Exception {
-        /*
-         * We should always make project to user assignment update on assignment
-         * aware User!
-         */
-        AssignedProject ap = (AssignedProject) p;
-        rs.updateInt("user_id", ap.getUser().getId());
-        rs.updateInt("project_id", ap.getId());
+        int currUserId = rs.getInt("user_id");
+        if (currUserId == 0) {
+            throw new DalException("Updating project assignment without actual user found!");
+        }
+        rs.updateInt("user_id", currUserId);
+        rs.updateInt("project_id", p.getId());
     }
 
     @Override

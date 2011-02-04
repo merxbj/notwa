@@ -27,8 +27,11 @@ import notwa.wom.Context;
 import notwa.wom.BusinessObject;
 
 import notwa.exception.DalException;
+import notwa.sql.SimpleSqlFilter;
+import notwa.sql.Sql;
 import notwa.sql.SqlParameterSet;
 import notwa.sql.SqlBuilder;
+import notwa.sql.SqlFilter;
 import notwa.wom.BusinessObjectCollection;
 
 /**
@@ -133,11 +136,12 @@ public abstract class DataAccessLayer<TObject extends BusinessObject, TCollectio
      */
     public int fill(TCollection boc, SqlParameterSet pc) {
         String sql = getSqlTemplate();
-        SqlBuilder sb = new SqlBuilder(sql, pc);
+        SqlFilter filter = new SimpleSqlFilter(pc, Sql.Logical.CONJUNCTION);
+        SqlBuilder sb = new SqlBuilder(sql, filter);
         try {
             ResultSet rs = getConnection().executeQuery(sb.compileSql());
             boc.setClosed(false);
-            boc.setResultSet(rs);
+            boc.setResultSet(new SmartResultSet(rs, filter));
 
             while (rs.next()) {
                 TObject bo = null;
@@ -187,7 +191,7 @@ public abstract class DataAccessLayer<TObject extends BusinessObject, TCollectio
         } else {
             String sql = getSqlTemplate();
             SqlParameterSet ps = getPrimaryKeyParams(primaryKey);
-            SqlBuilder sb = new SqlBuilder(sql, ps);
+            SqlBuilder sb = new SqlBuilder(sql, new SimpleSqlFilter(ps, Sql.Logical.CONJUNCTION));
 
             try {
                 ResultSet rs = getConnection().executeQuery(sb.compileSql());
@@ -225,7 +229,8 @@ public abstract class DataAccessLayer<TObject extends BusinessObject, TCollectio
             return;
         }
 
-        ResultSet rs = boc.getResultSet();
+        SmartResultSet srs = boc.getResultSet();
+        ResultSet rs = srs.getRs();
         try {
             rs.beforeFirst();
 
@@ -238,7 +243,7 @@ public abstract class DataAccessLayer<TObject extends BusinessObject, TCollectio
                 if (bo.isDeleted()) {
                     rs.deleteRow();
                 } else if (bo.isUpdated()) {
-                    updateSingleRow(rs, bo);
+                    updateSingleRow(srs, bo);
                     rs.updateRow();
                 }
             }
@@ -256,7 +261,7 @@ public abstract class DataAccessLayer<TObject extends BusinessObject, TCollectio
                         bo.setUniqeIdentifier(getLastUniqeIdentifier(bo) + 1);
                     }
                     rs.moveToInsertRow();
-                    updateSingleRow(rs, bo);
+                    updateSingleRow(srs, bo);
                     rs.insertRow();
                     rs.moveToCurrentRow();
                 }
@@ -423,7 +428,7 @@ public abstract class DataAccessLayer<TObject extends BusinessObject, TCollectio
      * @throws Exception    Whenever the concrete implementation doesn't find the
      *                      expected columns in the given <code>ResultSet</code>.
      */
-    protected abstract void updateSingleRow(ResultSet rs, TObject bo) throws Exception;
+    protected abstract void updateSingleRow(SmartResultSet rs, TObject bo) throws Exception;
 
     /**
      * Gets the sql query that should return the current highest value of uniqe

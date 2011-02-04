@@ -28,15 +28,22 @@ import notwa.exception.IllegalSqlOperationException;
  * @author Jaroslav Merxbauer
  * @version %I% %G%
  */
-public class SimpleSqlFilter implements SqlFilter, SqlFilterBuilder {
+public class SimpleSqlFilter implements SqlFilter, SqlFilterBuilder, AnalyzableSql {
 
     private SqlParameterSet parameters;
     private String relation;
 
     @Override
     public String formatForSql() {
-        StringBuilder builder = new StringBuilder("(");
 
+        /**
+         * Don't bother with the sql building if there are no parameters to resolve
+         */
+        if (parameters.isEmpty()) {
+            return "";
+        }
+
+        StringBuilder builder = new StringBuilder("(");
         for (Iterator<SqlParameter> it = parameters.iterator(); it.hasNext();) {
             SqlParameter param = it.next();
             builder.append(param.formatForSql());
@@ -104,5 +111,14 @@ public class SimpleSqlFilter implements SqlFilter, SqlFilterBuilder {
         this.parameters = parameters;
         this.relation = relation;
     }
-    
+
+    @Override
+    public void provideAnalizableData(SqlAnalyzer analyzer) {
+        analyzer.analyzeSimpleSqlFilter(this);
+    }
+
+    public SqlParameterSet getParameters() {
+        return parameters;
+    }
+
 }

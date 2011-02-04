@@ -42,10 +42,10 @@ import notwa.dal.UserDal;
 import notwa.gui.components.KeyValueComboBox;
 import notwa.gui.components.KeyValueList;
 import notwa.wom.Context;
-import notwa.wom.Project;
-import notwa.wom.ProjectCollection;
-import notwa.wom.User;
-import notwa.wom.UserCollection;
+import notwa.wom.project.Project;
+import notwa.wom.project.ProjectCollection;
+import notwa.wom.user.User;
+import notwa.wom.user.UserCollection;
 
 public class AssignmentManager extends JDialog implements ActionListener, ListSelectionListener {
     private JButton okButton, stornoButton, addButton, removeButton;
@@ -65,7 +65,7 @@ public class AssignmentManager extends JDialog implements ActionListener, ListSe
         init();
     }
     
-    public void init() {
+    private void init() {
         this.setLayout(new BorderLayout());
         this.setTitle("NOTWA - NOT Only Team Work Assistent - Assignment Manager");
         this.setSize(500,300);

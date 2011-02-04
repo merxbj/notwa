@@ -19,9 +19,9 @@
  */
 package notwa.dal;
 
-import notwa.wom.Note;
-import notwa.wom.NoteCollection;
-import notwa.wom.NotePrimaryKey;
+import notwa.wom.note.Note;
+import notwa.wom.note.NoteCollection;
+import notwa.wom.note.NotePrimaryKey;
 import notwa.common.ConnectionInfo;
 import notwa.sql.SqlParameterSet;
 import notwa.sql.SqlParameter;
@@ -29,7 +29,7 @@ import notwa.sql.Parameters;
 import notwa.sql.Sql;
 import notwa.exception.DalException;
 import notwa.wom.Context;
-import notwa.wom.User;
+import notwa.wom.user.User;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -130,7 +130,8 @@ public class NoteDal extends DataAccessLayer<Note, NoteCollection> {
     }
 
     @Override
-    protected void updateSingleRow(ResultSet rs, Note n) throws Exception {
+    protected void updateSingleRow(SmartResultSet srs, Note n) throws Exception {
+        ResultSet rs = srs.getRs();
         rs.updateInt("note_id", n.getId().getNoteId());
         rs.updateInt("work_item_id", n.getId().getWorkItemId());
         rs.updateInt("author_user_id", n.getAuthor().getId());

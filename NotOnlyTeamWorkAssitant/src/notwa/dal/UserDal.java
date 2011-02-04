@@ -25,9 +25,9 @@ import notwa.sql.SqlParameterSet;
 import notwa.sql.SqlParameter;
 import notwa.sql.Parameters;
 import notwa.sql.Sql;
-import notwa.wom.User;
-import notwa.wom.UserCollection;
-import notwa.wom.ProjectCollection;
+import notwa.wom.user.User;
+import notwa.wom.user.UserCollection;
+import notwa.wom.project.ProjectCollection;
 import notwa.wom.Context;
 import notwa.exception.DalException;
 
@@ -147,7 +147,8 @@ public class UserDal extends DataAccessLayer<User, UserCollection> {
     }
 
     @Override
-    protected void updateSingleRow(ResultSet rs, User u) throws Exception {
+    protected void updateSingleRow(SmartResultSet srs, User u) throws Exception {
+        ResultSet rs = srs.getRs();
         rs.updateInt("user_id", u.getId());
         rs.updateString("first_name", u.getFirstName());
         rs.updateString("last_name", u.getLastName());

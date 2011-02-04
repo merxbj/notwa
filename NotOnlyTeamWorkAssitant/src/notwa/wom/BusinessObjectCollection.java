@@ -19,8 +19,8 @@
  */
 package notwa.wom;
 
-import java.sql.ResultSet;
 import java.util.ArrayList;
+import notwa.dal.SmartResultSet;
 import notwa.exception.ContextException;
 import notwa.exception.DeveloperException;
 
@@ -48,7 +48,7 @@ public abstract class BusinessObjectCollection<T extends BusinessObject> extends
      * <code>RecordSet</code> could than be utilized during the databese update
      * process.
      */
-    protected ResultSet resultSet;
+    protected SmartResultSet resultSet;
 
     /**
      * The flag indicating that this collection is "closed" which actually means
@@ -72,7 +72,7 @@ public abstract class BusinessObjectCollection<T extends BusinessObject> extends
      * @param resultSet The original <code>ResultSet</code> based which this
      *                  <code>BusinessObjectCollection</code> has been created.
      */
-    public BusinessObjectCollection(Context currentContext, ResultSet resultSet) {
+    public BusinessObjectCollection(Context currentContext, SmartResultSet resultSet) {
         this.currentContext = currentContext;
         this.resultSet = resultSet;
     }
@@ -362,7 +362,7 @@ public abstract class BusinessObjectCollection<T extends BusinessObject> extends
      * @param resultSet The original <code>ResultSet</code> based which this
      *                  <code>BusinessObjectCollection</code> has been created.
      */
-    public void setResultSet(ResultSet resultSet) {
+    public void setResultSet(SmartResultSet resultSet) {
         this.resultSet = resultSet;
     }
 
@@ -373,7 +373,7 @@ public abstract class BusinessObjectCollection<T extends BusinessObject> extends
      * @return resultSet The original <code>ResultSet</code> based which this
      *                  <code>BusinessObjectCollection</code> has been created.
      */
-    public ResultSet getResultSet() {
+    public SmartResultSet getResultSet() {
         return resultSet;
     }
 

@@ -21,12 +21,12 @@ package notwa.dal;
 
 import notwa.common.ConnectionInfo;
 import notwa.sql.SqlParameterSet;
-import notwa.wom.Project;
-import notwa.wom.ProjectCollection;
+import notwa.wom.project.Project;
+import notwa.wom.project.ProjectCollection;
 import notwa.exception.DalException;
 import notwa.wom.Context;
 import notwa.sql.SqlParameter;
-import notwa.wom.UserCollection;
+import notwa.wom.user.UserCollection;
 import notwa.sql.Parameters;
 import notwa.sql.Sql;
 
@@ -128,7 +128,8 @@ public class ProjectDal extends DataAccessLayer<Project, ProjectCollection> {
     }
     
     @Override
-    protected void updateSingleRow(ResultSet rs, Project p) throws Exception {
+    protected void updateSingleRow(SmartResultSet srs, Project p) throws Exception {
+        ResultSet rs = srs.getRs();
         rs.updateInt("project_id", p.getId());
         rs.updateString("name", p.getName());
     }
