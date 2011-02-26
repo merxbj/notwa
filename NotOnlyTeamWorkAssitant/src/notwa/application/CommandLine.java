@@ -36,7 +36,7 @@ public class CommandLine {
     private String configFile;
 
     private static final String defaultLogFile = "./log/notwa.log";
-    private static final String defaultConfigFile = "./notwa.config";
+    private static final String defaultConfigFile = "./user.config";
 
     /**
      * Let us hide the constructor. The new CommandLine instances are going to be

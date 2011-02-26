@@ -60,7 +60,7 @@ public class Config {
     private Document dom;
     private ApplicationSettings as = new ApplicationSettings();
     private Set<NotwaConnectionInfo> connections = new TreeSet<NotwaConnectionInfo>();
-    private static String configFilePath = "./notwa.config";
+    private static String configFilePath = "./user.config";
     private final XPath xpath = XPathFactory.newInstance().newXPath();
     
     /**

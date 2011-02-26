@@ -31,7 +31,7 @@ import notwa.common.Config;
  * @author Jaroslav Merxbauer
  * @version %I% %G%
  */
-public class MainClass {
+public class Application {
 
     /**
      * The entry point to the application.
