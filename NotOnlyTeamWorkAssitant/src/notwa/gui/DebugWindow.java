@@ -48,12 +48,12 @@ public class DebugWindow extends JFrame {
         this.add(logScrollPane);
     }
 
-    public void appendMessage(String message) {
+    public void append(String message) {
         messages.push(message);
         log.setText("");
         
         for (String m : messages) {
-            log.append(m + "\n");
+            log.append(m);
         }
     }
 

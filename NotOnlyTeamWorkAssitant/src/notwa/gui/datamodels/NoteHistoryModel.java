@@ -19,10 +19,9 @@
  */
 package notwa.gui.datamodels;
 
-import java.util.Hashtable;
+import java.util.HashMap;
 
 import javax.swing.table.AbstractTableModel;
-import notwa.logger.LoggingFacade;
 import notwa.wom.note.Note;
 import notwa.wom.note.NoteCollection;
 
@@ -34,7 +33,7 @@ import notwa.wom.note.NoteCollection;
 public class NoteHistoryModel extends AbstractTableModel {
 
     private NoteCollection data;
-    private Hashtable<Integer, ColumnSettings<NoteHistoryTableColumn>> columns;
+    private HashMap<Integer, ColumnSettings<NoteHistoryTableColumn>> columns;
 
     public NoteHistoryModel(NoteCollection data) {
         this.data = data;
@@ -65,21 +64,17 @@ public class NoteHistoryModel extends AbstractTableModel {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        try {
-            Note row = data.get(rowIndex);
-            ColumnSettings<NoteHistoryTableColumn> cs = columns.get(columnIndex);
+        
+        Note row = data.get(rowIndex);
+        ColumnSettings<NoteHistoryTableColumn> cs = columns.get(columnIndex);
 
-            switch (cs.getColumnAlias()) {
-                case COLUMN_NOTE_AUTHOR_ALIAS:
-                    return (row.getAuthor() != null) ? row.getAuthor().getLogin() : "unknown";
-                case COLUMN_NOTE_TEXT_ALIAS:
-                    return row.getText();
-                default:
-                    return null;
-            }
-        } catch (Exception ex) {
-            LoggingFacade.handleException(ex);
-            return null;
+        switch (cs.getColumnAlias()) {
+            case COLUMN_NOTE_AUTHOR_ALIAS:
+                return (row.getAuthor() != null) ? row.getAuthor().getLogin() : "unknown";
+            case COLUMN_NOTE_TEXT_ALIAS:
+                return row.getText();
+            default:
+                return null;
         }
     }
 
@@ -103,7 +98,7 @@ public class NoteHistoryModel extends AbstractTableModel {
     }
 
     private void configureColumns() {
-        columns = new Hashtable<Integer, ColumnSettings<NoteHistoryTableColumn>>(2);
+        columns = new HashMap<Integer, ColumnSettings<NoteHistoryTableColumn>>(2);
         columns.put(0, new ColumnSettings<NoteHistoryTableColumn>(0, String.class, "Author", NoteHistoryTableColumn.COLUMN_NOTE_AUTHOR_ALIAS));
         columns.put(1, new ColumnSettings<NoteHistoryTableColumn>(1, String.class, "Text",   NoteHistoryTableColumn.COLUMN_NOTE_TEXT_ALIAS));
     }

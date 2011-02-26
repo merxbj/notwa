@@ -20,7 +20,6 @@
 package notwa.dal;
 
 import notwa.common.ConnectionInfo;
-import notwa.logger.LoggingFacade;
 import notwa.sql.SqlParameterSet;
 import notwa.sql.SqlParameter;
 import notwa.sql.Parameters;
@@ -178,7 +177,7 @@ public class UserDal extends DataAccessLayer<User, UserCollection> {
                 userId = rs.getInt("user_id");
             }
         } catch (SQLException sex) {
-            LoggingFacade.handleException(sex);
+            log.error("Error occured while validating the credetials!", sex);
             return false;
         }
 

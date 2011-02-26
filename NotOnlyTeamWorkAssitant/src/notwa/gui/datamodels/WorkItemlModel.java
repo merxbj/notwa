@@ -19,10 +19,8 @@
  */
 package notwa.gui.datamodels;
 
-import java.util.Hashtable;
+import java.util.HashMap;
 import javax.swing.table.AbstractTableModel;
-
-import notwa.logger.LoggingFacade;
 
 import notwa.wom.workitem.WorkItem;
 import notwa.wom.workitem.WorkItemCollection;
@@ -37,7 +35,7 @@ import notwa.wom.workitem.WorkItemStatus;
 public class WorkItemlModel extends AbstractTableModel {
 
     private WorkItemCollection data;
-    private Hashtable<Integer, ColumnSettings<WorkItemTableColumn>> columns;
+    private HashMap<Integer, ColumnSettings<WorkItemTableColumn>> columns;
 
     public WorkItemlModel(WorkItemCollection data) {
         this.data = data;
@@ -68,30 +66,24 @@ public class WorkItemlModel extends AbstractTableModel {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
+        WorkItem row = data.get(rowIndex);
+        ColumnSettings<WorkItemTableColumn> cs = columns.get(columnIndex);
 
-        try {
-            WorkItem row = data.get(rowIndex);
-            ColumnSettings<WorkItemTableColumn> cs = columns.get(columnIndex);
-
-            switch (cs.getColumnAlias()) {
-                case COLUMN_PROJECT_NAME_ALIAS:
-                    return (row.getProject() != null) ? row.getProject().getName() : null;
-                case COLUMN_WORK_ITEM_ID_ALIAS:
-                    return row.getId();
-                case COLUMN_WORK_ITEM_SUBJECT_ALIAS:
-                    return row.getSubject();
-                case COLUMN_WORK_ITEM_PRIORITY_ALIAS:
-                    return row.getPriority();
-                case COLUMN_ASSIGNED_USER_LOGIN_ALIAS:
-                    return (row.getAssignedUser() != null) ? row.getAssignedUser().getLogin() : null;
-                case COLUMN_WORK_ITEM_STATUS_ALIAS:
-                    return row.getStatus();
-                default:
-                    return null;
-            }
-        } catch (Exception ex) {
-            LoggingFacade.handleException(ex);
-            return null;
+        switch (cs.getColumnAlias()) {
+            case COLUMN_PROJECT_NAME_ALIAS:
+                return (row.getProject() != null) ? row.getProject().getName() : null;
+            case COLUMN_WORK_ITEM_ID_ALIAS:
+                return row.getId();
+            case COLUMN_WORK_ITEM_SUBJECT_ALIAS:
+                return row.getSubject();
+            case COLUMN_WORK_ITEM_PRIORITY_ALIAS:
+                return row.getPriority();
+            case COLUMN_ASSIGNED_USER_LOGIN_ALIAS:
+                return (row.getAssignedUser() != null) ? row.getAssignedUser().getLogin() : null;
+            case COLUMN_WORK_ITEM_STATUS_ALIAS:
+                return row.getStatus();
+            default:
+                return null;
         }
     }
 
@@ -115,7 +107,7 @@ public class WorkItemlModel extends AbstractTableModel {
     }
 
     private void configureColumns() {
-        columns = new Hashtable<Integer, ColumnSettings<WorkItemTableColumn>>(6);
+        columns = new HashMap<Integer, ColumnSettings<WorkItemTableColumn>>(6);
         columns.put(0, new ColumnSettings<WorkItemTableColumn>(0, String.class,           "Project",     WorkItemTableColumn.COLUMN_PROJECT_NAME_ALIAS));
         columns.put(1, new ColumnSettings<WorkItemTableColumn>(1, Integer.class,          "WIT#",        WorkItemTableColumn.COLUMN_WORK_ITEM_ID_ALIAS));
         columns.put(2, new ColumnSettings<WorkItemTableColumn>(2, String.class,           "Subject",     WorkItemTableColumn.COLUMN_WORK_ITEM_SUBJECT_ALIAS));

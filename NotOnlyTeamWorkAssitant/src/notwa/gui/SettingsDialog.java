@@ -33,7 +33,7 @@ import javax.swing.UIManager.LookAndFeelInfo;
 
 import notwa.common.ApplicationSettings;
 import notwa.common.Config;
-import notwa.logger.LoggingFacade;
+import org.apache.log4j.Logger;
 
 public class SettingsDialog extends JDialog implements ActionListener {
 
@@ -46,7 +46,7 @@ public class SettingsDialog extends JDialog implements ActionListener {
         init();
     }
     
-    public void init() {
+    private void init() {
         this.setLayout(new BorderLayout());
         this.setTitle("NOTWA - NOT Only Team Work Assistent - Settings");
         this.setSize(750,300);
@@ -118,8 +118,8 @@ public class SettingsDialog extends JDialog implements ActionListener {
             try {
                 UIManager.setLookAndFeel(as.getSkin());
             }
-            catch (Exception e) {
-                LoggingFacade.handleException(e);
+            catch (Exception ex) {
+                Logger.getLogger(this.getClass()).error("Exception occured while trying to set the look&feel!", ex);
             }
 
             Config.getInstance().setApplicationsSettings(as);

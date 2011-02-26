@@ -37,7 +37,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.text.DateFormatter;
 import javax.swing.text.MaskFormatter;
 
 import notwa.common.ConnectionInfo;
@@ -46,7 +45,6 @@ import notwa.dal.ProjectDal;
 import notwa.dal.UserDal;
 import notwa.dal.WorkItemDal;
 import notwa.gui.components.KeyValueComboBox;
-import notwa.logger.LoggingFacade;
 import notwa.security.Credentials;
 import notwa.wom.Context;
 import notwa.wom.project.Project;
@@ -57,8 +55,10 @@ import notwa.wom.workitem.WorkItem;
 import notwa.wom.workitem.WorkItemCollection;
 import notwa.wom.workitem.WorkItemPriority;
 import notwa.wom.workitem.WorkItemStatus;
+import org.apache.log4j.Logger;
  
 public class WorkItemEditor extends JDialog implements ActionListener {
+    private Logger log;
     private KeyValueComboBox<Project> projects;
     private KeyValueComboBox<User> users;
     private KeyValueComboBox<WorkItemPriority> priorities;
@@ -76,6 +76,7 @@ public class WorkItemEditor extends JDialog implements ActionListener {
     private Credentials currentUser;
     
     public WorkItemEditor(ConnectionInfo ci, Context context, WorkItemCollection wic, EventHandler<GuiEvent> guiHandler, Credentials currentUser) {
+        this.log = Logger.getLogger(this.getClass());
         this.ci = ci;
         this.context = context;
         this.wic = wic;
@@ -152,9 +153,9 @@ public class WorkItemEditor extends JDialog implements ActionListener {
         try {
             mf = new MaskFormatter("##.##.#### ##:##");
         } catch (ParseException ex) {
-            ex.printStackTrace();
+            log.debug("Incorrect mas format!", ex);
         }
-        JFormattedTextField eExpectingDate = new JFormattedTextField(mf);
+        eExpectingDate = new JFormattedTextField(mf);
         eExpectingDate.setBounds(227, 264, 138, 22);
         eExpectingDate.setValue("00.00.0000 00:00");
         
@@ -240,7 +241,7 @@ public class WorkItemEditor extends JDialog implements ActionListener {
                 }
                 catch (Exception e) {
                     JOptionPane.showMessageDialog(this, "Incorrect date format");
-                    LoggingFacade.handleException(e);
+                    log.error("Incorrect date format");
                     close = false;
                 }
             }
@@ -256,9 +257,9 @@ public class WorkItemEditor extends JDialog implements ActionListener {
                         throw new Exception("WorkItem does not exist");
                     }
                 }
-                catch (Exception e) {
+                catch (Exception ex) {
                     JOptionPane.showMessageDialog(this, "Check if Work item exists");
-                    LoggingFacade.handleException(e);
+                    log.error("Check if Work item exists", ex);
                     close = false;
                 }
             }

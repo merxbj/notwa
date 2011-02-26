@@ -19,10 +19,9 @@
  */
 package notwa.gui.datamodels;
 
-import java.util.Hashtable;
+import java.util.HashMap;
 import javax.swing.table.AbstractTableModel;
 
-import notwa.logger.LoggingFacade;
 import notwa.wom.user.User;
 import notwa.wom.user.UserCollection;
 
@@ -34,7 +33,7 @@ import notwa.wom.user.UserCollection;
 public class UserManagementModel extends AbstractTableModel {
 
     private UserCollection data;
-    private Hashtable<Integer, ColumnSettings<UserManagementTableColumn>> columns;
+    private HashMap<Integer, ColumnSettings<UserManagementTableColumn>> columns;
 
     public UserManagementModel(UserCollection data) {
         this.data = data;
@@ -65,24 +64,18 @@ public class UserManagementModel extends AbstractTableModel {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
+        User row = data.get(rowIndex);
+        ColumnSettings<UserManagementTableColumn> cs = columns.get(columnIndex);
 
-        try {
-            User row = data.get(rowIndex);
-            ColumnSettings<UserManagementTableColumn> cs = columns.get(columnIndex);
-
-            switch (cs.getColumnAlias()) {
-                case COLUMN_USER_LOGIN_ALIAS:
-                    return row.getLogin();
-                case COLUMN_USER_FIRST_NAME_ALIAS:
-                    return row.getFirstName();
-                case COLUMN_USER_LAST_NAME_ALIAS:
-                    return row.getLastName();
-                default:
-                    return null;
-            }
-        } catch (Exception ex) {
-            LoggingFacade.handleException(ex);
-            return null;
+        switch (cs.getColumnAlias()) {
+            case COLUMN_USER_LOGIN_ALIAS:
+                return row.getLogin();
+            case COLUMN_USER_FIRST_NAME_ALIAS:
+                return row.getFirstName();
+            case COLUMN_USER_LAST_NAME_ALIAS:
+                return row.getLastName();
+            default:
+                return null;
         }
     }
 
@@ -106,7 +99,7 @@ public class UserManagementModel extends AbstractTableModel {
     }
 
     private void configureColumns() {
-        columns = new Hashtable<Integer, ColumnSettings<UserManagementTableColumn>>(3);
+        columns = new HashMap<Integer, ColumnSettings<UserManagementTableColumn>>(3);
         columns.put(0, new ColumnSettings<UserManagementTableColumn>(0, String.class, "Login",      UserManagementTableColumn.COLUMN_USER_LOGIN_ALIAS));
         columns.put(1, new ColumnSettings<UserManagementTableColumn>(1, String.class, "First Name", UserManagementTableColumn.COLUMN_USER_FIRST_NAME_ALIAS));
         columns.put(2, new ColumnSettings<UserManagementTableColumn>(2, String.class, "Last Name",  UserManagementTableColumn.COLUMN_USER_LAST_NAME_ALIAS));

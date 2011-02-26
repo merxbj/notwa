@@ -20,7 +20,7 @@
 
 package notwa.threading;
 
-import notwa.logger.LoggingFacade;
+import org.apache.log4j.Logger;
 
 /**
  * Intention of this <code>class</code> is to provide a unified way to run some
@@ -126,7 +126,7 @@ public class IndeterminateProgressThread {
             try {
                 onRun.perform();
             } catch (Exception ex) {
-                LoggingFacade.handleException(ex);
+                Logger.getLogger(this.getClass()).error("Error occured while running the worker!", ex);
             } finally {
                 onTerminate.perform();
             }

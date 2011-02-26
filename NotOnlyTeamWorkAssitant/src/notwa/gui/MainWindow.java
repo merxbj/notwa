@@ -32,12 +32,12 @@ import javax.swing.plaf.FontUIResource;
 import javax.swing.table.TableRowSorter;
 import notwa.common.ConnectionInfo;
 import notwa.gui.datamodels.WorkItemlModel;
-import notwa.logger.LoggingFacade;
 import notwa.security.SecurityEvent;
 import notwa.security.SecurityEventParams;
 import notwa.threading.Action;
 import notwa.threading.IndeterminateProgressThread;
 import notwa.wom.Context;
+import org.apache.log4j.Logger;
 
 /**
  * Class <code>MainWindow</code>
@@ -50,18 +50,15 @@ public class MainWindow extends JFrame {
     private MainLayoutLoader mll;
     private MainMenu menu;
     private JStatusBar statusBar;
-    /**
-     * Constructor only calls method to initialize MainWindow
-     */
+    private Logger log;
+    
     public MainWindow() {
+        log = Logger.getLogger(this.getClass());
         trySetLookAndFeel();
         init();
         startup();
     }
 
-    /**
-     * Performs the initialization
-     */
     private void init() {
 
         /**
@@ -112,9 +109,6 @@ public class MainWindow extends JFrame {
         this.setVisible(true);
     }
     
-    /**
-     * Processes that have to be taken only during the startup of the application
-     */
     private void startup() {
         /*
          * This solves the problem with TextArea font in windows
@@ -185,7 +179,7 @@ public class MainWindow extends JFrame {
                 setMenuEnabled(true);
                 break;
             default:
-                LoggingFacade.getLogger().logError("Unexpected event: %s", e.toString());
+                log.debug("Unexpected event: " + e.toString());
                 break;
         }
     }
@@ -196,7 +190,7 @@ public class MainWindow extends JFrame {
                 invokeLogin(e.getParams());
                 break;
             default:
-                LoggingFacade.getLogger().logError("Unexpected event: %s", e.toString());
+                log.debug("Unexpected event: " + e.toString());
                 break;
         }
     }
@@ -262,7 +256,7 @@ public class MainWindow extends JFrame {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName()); 
             }
             catch (Exception exc) {
-                LoggingFacade.handleException(exc);
+                log.error("Exception occured while trying to set the look&feel!", ex);
             }
         }
     }

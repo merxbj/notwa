@@ -35,7 +35,6 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import notwa.common.ConnectionInfo;
-import notwa.logger.LoggingFacade;
 import notwa.dal.ProjectDal;
 import notwa.dal.ProjectToUserAssignmentDal;
 import notwa.dal.UserDal;
@@ -46,6 +45,7 @@ import notwa.wom.project.Project;
 import notwa.wom.project.ProjectCollection;
 import notwa.wom.user.User;
 import notwa.wom.user.UserCollection;
+import org.apache.log4j.Logger;
 
 public class AssignmentManager extends JDialog implements ActionListener, ListSelectionListener {
     private JButton okButton, stornoButton, addButton, removeButton;
@@ -228,12 +228,8 @@ public class AssignmentManager extends JDialog implements ActionListener, ListSe
             currentlySelectedProject = projects.getSelectedKey();
             if (users.getSelectedValues().length != 0) {
                 for (User user : users.getSelectedKeys()) {
-                    try {
-                        user.setInserted(true);
-                        currentlySelectedProject.addAssignedUser(user);
-                    } catch (Exception e) {
-                        LoggingFacade.handleException(e);
-                    }
+                    user.setInserted(true);
+                    currentlySelectedProject.addAssignedUser(user);
                     projectUsersModel.addElement(user, user.getLogin());
                     usersModel.removeKey(user);
                 }
@@ -244,11 +240,7 @@ public class AssignmentManager extends JDialog implements ActionListener, ListSe
             currentlySelectedProject = projects.getSelectedKey();
             if (currentlyAssignedUsers.getSelectedValues().length != 0) {
                 for (User user : currentlyAssignedUsers.getSelectedKeys()) {
-                    try {
-                        user.setDeleted(true);
-                    } catch (Exception e) {
-                        LoggingFacade.handleException(e);
-                    }
+                    user.setDeleted(true);
                     usersModel.addElement(user, user.getLogin());
                     projectUsersModel.removeKey(user);
                 }

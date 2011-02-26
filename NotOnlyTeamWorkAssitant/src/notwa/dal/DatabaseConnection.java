@@ -20,12 +20,12 @@
 package notwa.dal;
 
 import notwa.common.ConnectionInfo;
-import notwa.logger.LoggingFacade;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import org.apache.log4j.Logger;
 
 /**
  * <code>DatabaseConnection</code> encapsulates the jdbc conneciton retrived
@@ -38,6 +38,7 @@ import java.sql.SQLException;
 public class DatabaseConnection {
     private Connection con;
     private ConnectionInfo ci;
+    private Logger log;
     
     /**
      * The sole constructor accepting the <code>ConnectionInfo</code> describing
@@ -47,6 +48,7 @@ public class DatabaseConnection {
      *              information and credetials.
      */
     public DatabaseConnection(ConnectionInfo ci) {
+        this.log = Logger.getLogger(this.getClass());
         this.ci = ci;
     }
     
@@ -62,7 +64,7 @@ public class DatabaseConnection {
      *                      the database or accessing the ResultSet.
      */
     public ResultSet executeQuery(String query) throws SQLException {
-        LoggingFacade.getLogger().logDebug(query);
+        log.trace(query);
 
         /* Make sure that you are connected, otherwise try to reconnect */
         if (!isConnected()) {
@@ -89,7 +91,7 @@ public class DatabaseConnection {
      *                      the database or accessing the ResultSet.
      */
     public <TOutput> TOutput executeScalar(String query) throws SQLException {
-        LoggingFacade.getLogger().logDebug(query);
+        log.trace(query);
 
         /* Make sure that you are connected, otherwise try to reconnect */
         if (!isConnected()) {
@@ -120,8 +122,8 @@ public class DatabaseConnection {
             } else {
                 return false;
             }
-        } catch (Exception ex) {
-            LoggingFacade.handleException(ex);
+        } catch (SQLException sex) {
+            log.error("Error occured while asking isClosed on connection!", sex);
             return false;
         }
     }
@@ -134,7 +136,7 @@ public class DatabaseConnection {
             try {
                 con.close();
             } catch (Exception ex) {
-                LoggingFacade.handleException(ex);
+                log.error("Error occured while closing the connection!", ex);
             }
         }
     }
@@ -148,7 +150,7 @@ public class DatabaseConnection {
         try {
             con = DriverManager.getConnection(ci.compileConnectionString(), ci.getUser(), ci.getPassword());
         } catch (SQLException ex) {
-            LoggingFacade.handleException(ex);
+            log.error("Exception occured while connecting to the MySql database!", ex);
             throw ex;
         }
     }

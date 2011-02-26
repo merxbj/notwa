@@ -43,7 +43,6 @@ import javax.swing.text.MaskFormatter;
 import notwa.dal.NoteDal;
 import notwa.dal.WorkItemDal;
 import notwa.gui.components.KeyValueComboBox;
-import notwa.logger.LoggingFacade;
 import notwa.wom.note.Note;
 import notwa.wom.note.NoteCollection;
 import notwa.wom.project.Project;
@@ -52,9 +51,12 @@ import notwa.wom.user.UserCollection;
 import notwa.wom.workitem.WorkItem;
 import notwa.wom.workitem.WorkItemPriority;
 import notwa.wom.workitem.WorkItemStatus;
+import org.apache.log4j.Logger;
 
+// TODO: <MERXBJ> What the fuck is going on here????
 public class WorkItemDetail extends WorkItemDetailLayout implements ActionListener {
-    private JButton save,addNote;
+    private Logger log;
+    private JButton btnSave,btnAddNote;
     private JTextArea description;
     private JTextArea latestNote;
     private JTextField parent;
@@ -68,23 +70,24 @@ public class WorkItemDetail extends WorkItemDetailLayout implements ActionListen
     private TabContent tc;
 
     public WorkItemDetail() {
+        this.log = Logger.getLogger(this.getClass());
         init();
     }
     
     @Override
     public void init() {
 
-        this.save = new JButton("Save");
-        this.addNote = new JButton("Add note");
+        this.btnSave = new JButton("Save");
+        this.btnAddNote = new JButton("Add note");
         this.description = new JTextArea();
         this.latestNote = new JTextArea();
         this.parent = new JTextField();
-        //this.deadline = new JFormattedTextField();
+        
         MaskFormatter mf = null;
         try {
             mf = new MaskFormatter("##.##.#### ##:##");
         } catch (ParseException ex) {
-            ex.printStackTrace();
+            log.debug("Incorrect mask format!", ex);
         }
         this.deadline = new JFormattedTextField(mf);
         this.lastModified = new JTextField();
@@ -120,11 +123,11 @@ public class WorkItemDetail extends WorkItemDetailLayout implements ActionListen
             
         JPanel buttonsPanel = new JPanel();
         
-        save.addActionListener(this);
-        addNote.addActionListener(this);
+        btnSave.addActionListener(this);
+        btnAddNote.addActionListener(this);
         
-        buttonsPanel.add(addNote);
-        buttonsPanel.add(save);
+        buttonsPanel.add(btnAddNote);
+        buttonsPanel.add(btnSave);
         
         JPanel bottomPanel = new JPanel(new BorderLayout());
 
@@ -264,8 +267,8 @@ public class WorkItemDetail extends WorkItemDetailLayout implements ActionListen
         this.setParent(0);
         this.setDeadline(null);
         
-        save.setEnabled(false);
-        addNote.setEnabled(false);
+        btnSave.setEnabled(false);
+        btnAddNote.setEnabled(false);
     }
 
     public void loadFromWorkItem(WorkItem wi, TabContent tc) {
@@ -291,8 +294,8 @@ public class WorkItemDetail extends WorkItemDetailLayout implements ActionListen
             setStatus(wi.getStatus());
             setLastNote((nc != null && nc.size() > 0) ? (nc.get(0)) : null);
 
-            save.setEnabled(true);
-            addNote.setEnabled(true);
+            btnSave.setEnabled(true);
+            btnAddNote.setEnabled(true);
         }
     }
     
@@ -302,7 +305,7 @@ public class WorkItemDetail extends WorkItemDetailLayout implements ActionListen
     
     @Override
     public void actionPerformed(ActionEvent ae) {
-        if (ae.getSource() == save) {
+        if (ae.getSource() == btnSave) {
             if (JOptionPane.showConfirmDialog(this, "Are you sure?") == 0) {
                 boolean save = true;
                 
@@ -311,10 +314,10 @@ public class WorkItemDetail extends WorkItemDetailLayout implements ActionListen
                         DateFormat df = new SimpleDateFormat("dd.MM.yyyy HH:mm");
                         currentWorkItem.setExpectedTimestamp(df.parse(deadline.getText()));
                     }
-                    catch (Exception e) {
+                    catch (Exception ex) {
                         save = false;
                         JOptionPane.showMessageDialog(this, "Incorrect date format");
-                        LoggingFacade.handleException(e);
+                        log.error("Incorrect date format", ex);
                     }
                 }
                 
@@ -328,10 +331,10 @@ public class WorkItemDetail extends WorkItemDetailLayout implements ActionListen
                             throw new Exception("WorkItem does not exist");
                         }
                     }
-                    catch (Exception e) {
+                    catch (Exception ex) {
                         save = false;
                         JOptionPane.showMessageDialog(this, "Check if Work item exists");
-                        LoggingFacade.handleException(e);
+                        log.error("Check if Work item exists", ex);
                     }
                 }
                 else {
@@ -352,7 +355,7 @@ public class WorkItemDetail extends WorkItemDetailLayout implements ActionListen
             }
         }
         
-        if (ae.getSource() == addNote) {
+        if (ae.getSource() == btnAddNote) {
             final JTextArea textArea = new JTextArea();
             JScrollPane scrollPane = new JScrollPane(textArea);     
             scrollPane.setPreferredSize(new Dimension(350, 150));

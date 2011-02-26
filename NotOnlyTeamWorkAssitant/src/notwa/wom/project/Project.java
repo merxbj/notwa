@@ -142,7 +142,7 @@ public class Project extends BusinessObject implements Comparable<Project>, Clon
      * @throws ContextException If the given <code>User</code> doesn't live in the
      *                          same <code>Context</code> as its collection.
      */
-    public boolean addAssignedUser(User assignedUser) throws ContextException {
+    public boolean addAssignedUser(User assignedUser) {
         if (assignedUsers == null) {
             return false;
         }

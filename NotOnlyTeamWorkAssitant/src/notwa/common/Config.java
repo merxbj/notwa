@@ -20,8 +20,6 @@
 
 package notwa.common;
 
-import notwa.logger.LoggingFacade;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.StringWriter;
@@ -38,6 +36,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.xpath.*;
+import org.apache.log4j.Logger;
 import org.w3c.dom.*;
 
 /**
@@ -62,17 +61,20 @@ public class Config {
     private Set<NotwaConnectionInfo> connections = new TreeSet<NotwaConnectionInfo>();
     private static String configFilePath = "./user.config";
     private final XPath xpath = XPathFactory.newInstance().newXPath();
+    private final Logger log;
     
     /**
      * Hidden constructor to prevent instancing the class from outside world.
      */
     protected Config() {
+        log = Logger.getLogger(this.getClass());
         File configFile = new File(configFilePath);
 
         try {
             this.parse(configFile);
+            log.info("Successfully parsed the config file " + configFilePath);
         } catch (Exception ex) {
-            LoggingFacade.handleException(ex);
+            log.error("Error occured while parsing the config file!", ex);
         }
     }
     
@@ -137,7 +139,7 @@ public class Config {
      * @param configFile The file claimed to be the configuration XML file.
      * @throws Exception If the config file does not exist.
      */
-    public void parse(File configFile) throws Exception {
+    private void parse(File configFile) throws Exception {
         if (configFile.exists()) {
             DocumentBuilder db = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             this.dom = db.parse(configFile);
@@ -240,7 +242,7 @@ public class Config {
                 throw new Exception("Config file cannot be deleted!");
             }
         } catch (Exception ex) {
-            LoggingFacade.handleException(ex);
+            log.error("Error occured while saving the config file!", ex);
         }
     }
 
@@ -259,28 +261,23 @@ public class Config {
                 childs.add(rawChilds.item(i));
             }
         } catch (XPathExpressionException xpeex) {
-            LoggingFacade.handleException(xpeex);
+            log.error("Error occured while executing an XPath expression!", xpeex);
         }
 
         return childs;
     }
     
     /**
-     * This functions is needed when is unsure if config hasnt been modified
+     * This functions is needed when one is unsure if config has been modified
      */
     public void reloadConfig() {
-        /*
-         * Clear all already filled data
-         */
         connections.clear();
         
-        
         File configFile = new File(configFilePath);
-
         try {
             this.parse(configFile);
         } catch (Exception ex) {
-            LoggingFacade.handleException(ex);
+            log.error("Error occured while reloading the config!", ex);
         }
     }
 }

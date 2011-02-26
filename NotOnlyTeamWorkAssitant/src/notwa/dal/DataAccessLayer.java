@@ -22,7 +22,6 @@ package notwa.dal;
 import java.sql.ResultSet;
 import java.util.HashMap;
 import notwa.common.ConnectionInfo;
-import notwa.logger.LoggingFacade;
 import notwa.wom.Context;
 import notwa.wom.BusinessObject;
 
@@ -33,6 +32,7 @@ import notwa.sql.SqlParameterSet;
 import notwa.sql.SqlBuilder;
 import notwa.sql.SqlFilter;
 import notwa.wom.BusinessObjectCollection;
+import org.apache.log4j.Logger;
 
 /**
  * <code>DataAccessLayer</code> is an abstract class providing a basic functionality to all
@@ -61,25 +61,12 @@ import notwa.wom.BusinessObjectCollection;
 public abstract class DataAccessLayer<TObject extends BusinessObject, TCollection extends BusinessObjectCollection<TObject>> {
     private static HashMap<ConnectionInfo, DatabaseConnection> connections;
 
-    /**
-     * The <code>ConnectionInfo</code> which is used to connect to the 
-     * database for this concrete <code>DataAcessLayer</code>
-     */
     protected ConnectionInfo ci;
-
-    /**
-     * The <code>Context</code> within which this concrete <code>DataAcessLayer</code>
-     * figuratively lives.
-     */
     protected Context currentContext;
-
-    /**
-     * The default constructor which should never been invoked.
-     * Any attempt of constructing any DAL using this constructor will be logged
-     * as an error!
-     */
+    protected Logger log;
+    
     protected DataAccessLayer() {
-        LoggingFacade.getLogger().logDebug("Creating DataAccessLayer subclass with default constructor!");
+        Logger.getLogger(this.getClass()).debug("Creating DataAccessLayer subclass with default constructor!");
     }
     
     /**
@@ -92,6 +79,7 @@ public abstract class DataAccessLayer<TObject extends BusinessObject, TCollectio
      *                  live its pittyful life of collectiong data.
      */
     public DataAccessLayer(ConnectionInfo ci, Context context) {
+        this.log = Logger.getLogger(this.getClass());
         this.ci = ci;
         this.currentContext = context;
 
@@ -153,11 +141,11 @@ public abstract class DataAccessLayer<TObject extends BusinessObject, TCollectio
                 }
 
                 if (!boc.add(bo)) {
-                    LoggingFacade.getLogger().logDebug("BusinessObject %s could not be added to the collection!", bo.toString());
+                    log.debug(String.format("BusinessObject %s could not be added to the collection!", bo.toString()));
                 }
             }
         } catch (Exception ex) {
-            LoggingFacade.handleException(ex);
+            log.error("Error occured while filling the Business Object Collection!", ex);
         } finally {
             /*
              * Make sure that the collection knows that it is up-to-date and close
@@ -272,7 +260,7 @@ public abstract class DataAccessLayer<TObject extends BusinessObject, TCollectio
              */
             boc.commit();
         } catch (Exception ex) {
-            LoggingFacade.handleException(ex);
+            log.error("Error occured while updating the Business Object Collection");
         }
     }
 

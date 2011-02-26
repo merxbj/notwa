@@ -43,9 +43,7 @@ import javax.swing.KeyStroke;
 
 import notwa.common.ApplicationSettings;
 import notwa.common.Config;
-import notwa.common.ConnectionInfo;
 import notwa.common.NotwaConnectionInfo;
-import notwa.logger.LoggingFacade;
 import notwa.exception.SignInException;
 import notwa.gui.components.KeyValueComboBox;
 import notwa.gui.components.NotwaProgressBar;
@@ -53,6 +51,7 @@ import notwa.security.Credentials;
 import notwa.security.Security;
 import notwa.threading.Action;
 import notwa.threading.IndeterminateProgressThread;
+import org.apache.log4j.Logger;
 
 
 /**
@@ -82,7 +81,7 @@ public class LoginDialog extends JDialog implements ActionListener {
         init();
     }
     
-    public void init() {
+    private void init() {
         this.setLayout(new BorderLayout());
         this.setTitle("NOTWA - NOT Only Team Work Assistent - Sign-in");
         this.setSize(500,250);
@@ -246,7 +245,7 @@ public class LoginDialog extends JDialog implements ActionListener {
                     params.setVisible(false);
                 } catch (SignInException siex) {
                     JOptionPane.showMessageDialog(loginDialog, "Bad user name or password!");
-                    LoggingFacade.handleException(siex);
+                    Logger.getLogger(this.getClass()).error("Bad user name or password while signing in!", siex);
                 } finally {
                     params.stornoButton.setEnabled(true);
                     params.okButton.setEnabled(true);

@@ -19,10 +19,9 @@
  */
 package notwa.gui.datamodels;
 
-import java.util.Hashtable;
+import java.util.HashMap;
 import javax.swing.table.AbstractTableModel;
 
-import notwa.logger.LoggingFacade;
 import notwa.wom.project.Project;
 import notwa.wom.project.ProjectCollection;
 
@@ -34,7 +33,7 @@ import notwa.wom.project.ProjectCollection;
 public class ProjectManagementModel extends AbstractTableModel {
 
     private ProjectCollection data;
-    private Hashtable<Integer, ColumnSettings<ProjectManagementTableColumn>> columns;
+    private HashMap<Integer, ColumnSettings<ProjectManagementTableColumn>> columns;
 
     public ProjectManagementModel(ProjectCollection data) {
         this.data = data;
@@ -65,20 +64,14 @@ public class ProjectManagementModel extends AbstractTableModel {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
+        Project row = data.get(rowIndex);
+        ColumnSettings<ProjectManagementTableColumn> cs = columns.get(columnIndex);
 
-        try {
-            Project row = data.get(rowIndex);
-            ColumnSettings<ProjectManagementTableColumn> cs = columns.get(columnIndex);
-
-            switch (cs.getColumnAlias()) {
-                case COLUMN_PROJECT_NAME_ALIAS:
-                    return row.getName();
-                default:
-                    return null;
-            }
-        } catch (Exception ex) {
-            LoggingFacade.handleException(ex);
-            return null;
+        switch (cs.getColumnAlias()) {
+            case COLUMN_PROJECT_NAME_ALIAS:
+                return row.getName();
+            default:
+                return null;
         }
     }
 
@@ -102,7 +95,7 @@ public class ProjectManagementModel extends AbstractTableModel {
     }
 
     private void configureColumns() {
-        columns = new Hashtable<Integer, ColumnSettings<ProjectManagementTableColumn>>(1);
+        columns = new HashMap<Integer, ColumnSettings<ProjectManagementTableColumn>>(1);
         columns.put(0, new ColumnSettings<ProjectManagementTableColumn>(0, String.class, "Project name", ProjectManagementTableColumn.COLUMN_PROJECT_NAME_ALIAS));
     }
 

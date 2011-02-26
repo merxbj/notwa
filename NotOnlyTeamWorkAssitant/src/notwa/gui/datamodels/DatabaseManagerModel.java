@@ -20,20 +20,22 @@
 package notwa.gui.datamodels;
 
 import java.util.Collection;
-import java.util.Hashtable;
+import java.util.HashMap;
 import java.util.Vector;
 
 import javax.swing.table.DefaultTableModel;
 
 import notwa.common.NotwaConnectionInfo;
-import notwa.logger.LoggingFacade;
+import org.apache.log4j.Logger;
 
 public class DatabaseManagerModel extends DefaultTableModel {
 
+    private Logger log;
     private Collection<NotwaConnectionInfo> data;
-    private Hashtable<Integer, ColumnSettings<DatabaseManagerTableColumn>> columns;
+    private HashMap<Integer, ColumnSettings<DatabaseManagerTableColumn>> columns;
 
     public DatabaseManagerModel(Collection<NotwaConnectionInfo> nci) {
+        this.log = Logger.getLogger(this.getClass());
         this.data = nci;
         configureColumns();
     }
@@ -70,33 +72,29 @@ public class DatabaseManagerModel extends DefaultTableModel {
 
     @Override
     public void setValueAt(Object value, int rowIndex, int columnIndex) {
-        try {
-            NotwaConnectionInfo row = (NotwaConnectionInfo)data.toArray()[rowIndex];
-            ColumnSettings<DatabaseManagerTableColumn> cs = columns.get(columnIndex);
-            switch (cs.getColumnAlias()) {
-                case COLUMN_DATABASE_LABEL:
-                    row.setLabel((String)value);
-                    break;
-                case COLUMN_DATABASE_DBNAME:
-                    row.setDbname((String)value);
-                    break;
-                case COLUMN_DATABASE_HOST:
-                    row.setHost((String)value);
-                    break;
-                case COLUMN_DATABASE_PORT:
-                    row.setPort((String)value);
-                    break;
-                case COLUMN_DATABASE_USER:
-                    row.setUser((String)value);
-                    break;
-                case COLUMN_DATABASE_PASSWORD:
-                    row.setPassword((String)value);
-                    break;
-                default:
-                    throw new Exception("Unsupported cell update!");
-            }
-        } catch (Exception ex) {
-            LoggingFacade.handleException(ex);
+        NotwaConnectionInfo row = (NotwaConnectionInfo)data.toArray()[rowIndex];
+        ColumnSettings<DatabaseManagerTableColumn> cs = columns.get(columnIndex);
+        switch (cs.getColumnAlias()) {
+            case COLUMN_DATABASE_LABEL:
+                row.setLabel((String)value);
+                break;
+            case COLUMN_DATABASE_DBNAME:
+                row.setDbname((String)value);
+                break;
+            case COLUMN_DATABASE_HOST:
+                row.setHost((String)value);
+                break;
+            case COLUMN_DATABASE_PORT:
+                row.setPort((String)value);
+                break;
+            case COLUMN_DATABASE_USER:
+                row.setUser((String)value);
+                break;
+            case COLUMN_DATABASE_PASSWORD:
+                row.setPassword((String)value);
+                break;
+            default:
+                log.debug("Unsupported cell update!");
         }
         super.fireTableCellUpdated(rowIndex, columnIndex);
     }
@@ -104,29 +102,24 @@ public class DatabaseManagerModel extends DefaultTableModel {
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
 
-        try {
-            NotwaConnectionInfo row = (NotwaConnectionInfo)data.toArray()[rowIndex];
-            ColumnSettings<DatabaseManagerTableColumn> cs = columns.get(columnIndex);
+        NotwaConnectionInfo row = (NotwaConnectionInfo)data.toArray()[rowIndex];
+        ColumnSettings<DatabaseManagerTableColumn> cs = columns.get(columnIndex);
 
-            switch (cs.getColumnAlias()) {
-                case COLUMN_DATABASE_LABEL:
-                    return row.getLabel();
-                case COLUMN_DATABASE_DBNAME:
-                    return row.getDbname();
-                case COLUMN_DATABASE_HOST:
-                    return row.getHost();
-                case COLUMN_DATABASE_PORT:
-                    return row.getPort();
-                case COLUMN_DATABASE_USER:
-                    return row.getUser();
-                case COLUMN_DATABASE_PASSWORD:
-                    return "|_PASSWORD_PROTECTED_|";
-                default:
-                    return null;
-            }
-        } catch (Exception ex) {
-            LoggingFacade.handleException(ex);
-            return null;
+        switch (cs.getColumnAlias()) {
+            case COLUMN_DATABASE_LABEL:
+                return row.getLabel();
+            case COLUMN_DATABASE_DBNAME:
+                return row.getDbname();
+            case COLUMN_DATABASE_HOST:
+                return row.getHost();
+            case COLUMN_DATABASE_PORT:
+                return row.getPort();
+            case COLUMN_DATABASE_USER:
+                return row.getUser();
+            case COLUMN_DATABASE_PASSWORD:
+                return "|_PASSWORD_PROTECTED_|";
+            default:
+                return null;
         }
     }
     
@@ -150,7 +143,7 @@ public class DatabaseManagerModel extends DefaultTableModel {
     }
 
     private void configureColumns() {
-        columns = new Hashtable<Integer, ColumnSettings<DatabaseManagerTableColumn>>(1);
+        columns = new HashMap<Integer, ColumnSettings<DatabaseManagerTableColumn>>(1);
         columns.put(0, new ColumnSettings<DatabaseManagerTableColumn>(0, String.class, "Label", DatabaseManagerTableColumn.COLUMN_DATABASE_LABEL));
         columns.put(1, new ColumnSettings<DatabaseManagerTableColumn>(1, String.class, "Database name", DatabaseManagerTableColumn.COLUMN_DATABASE_DBNAME));
         columns.put(2, new ColumnSettings<DatabaseManagerTableColumn>(2, String.class, "Host", DatabaseManagerTableColumn.COLUMN_DATABASE_HOST));

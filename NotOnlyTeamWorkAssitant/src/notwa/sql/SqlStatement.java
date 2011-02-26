@@ -19,9 +19,9 @@
  */
 package notwa.sql;
 
-import notwa.logger.LoggingFacade;
 import java.util.HashMap;
 import java.util.StringTokenizer;
+import org.apache.log4j.Logger;
 
 /**
  * This <code>class</code> represents a single parameter placeholders statement
@@ -83,7 +83,7 @@ public class SqlStatement {
                 }
             }
         } catch (Exception ex) {
-            LoggingFacade.handleException(ex);
+            Logger.getLogger(this.getClass()).debug("Unable to parse the SqlStatement pattern!", ex);
             return false;
         }
         return true;

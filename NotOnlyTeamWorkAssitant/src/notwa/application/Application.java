@@ -20,9 +20,18 @@
 
 package notwa.application;
 
+import javax.xml.parsers.DocumentBuilderFactory;
 import notwa.gui.MainWindow;
-import notwa.logger.LoggingFacade;
 import notwa.common.Config;
+import org.apache.log4j.Appender;
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.ConsoleAppender;
+import org.apache.log4j.Layout;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PatternLayout;
+import org.apache.log4j.xml.DOMConfigurator;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 /**
  * The Class representin the entry point to the application. It parses the input
@@ -59,12 +68,18 @@ public class Application {
      *              configure the logging.
      */
     private static void configureLogging(CommandLine cl) {
-        LoggingFacade lf = LoggingFacade.getInstance();
-
-        lf.enableFileLogging(cl.getLogFile());
-        if (cl.isDebug()) {
-            lf.enableWindowLogging();
+        try {
+            Document config = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse("app.config");
+            Element log4jConfig = (Element) config.getDocumentElement().getElementsByTagName("log4j:configuration").item(0);
+            DOMConfigurator.configure(log4jConfig);
+            Logger.getLogger(Application.class).info("Logging configuration from config successfully applied!");
+        } catch (Exception ex) {
+            Layout layout = new PatternLayout("%d %p %t %c %m%n");
+            Appender appender = new ConsoleAppender(layout);
+            BasicConfigurator.configure(appender);
+            Logger.getLogger(Application.class).error("Unable to configure logging from config. Fallback configuration used instead!", ex);
         }
+        Logger.getLogger(Application.class).info("Logging is now up and running!");
     }
     
     /**

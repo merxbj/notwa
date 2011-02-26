@@ -21,7 +21,7 @@
 package notwa.wom;
 
 import java.lang.reflect.Field;
-import notwa.logger.LoggingFacade;
+import org.apache.log4j.Logger;
 
 /**
  * Abstract class representing a single <code>BusinessObject</code> and providing
@@ -90,12 +90,15 @@ public abstract class BusinessObject {
      * </p>
      */
     protected boolean inserted;
+    
+    protected Logger log;
 
     /**
      * The sole constructor making sure that all members are set to their default
      * values.
      */
     public BusinessObject() {
+        this.log = Logger.getLogger(this.getClass());
         this.deleted = false;
         this.inserted = false;
         this.updated = false;
@@ -118,7 +121,7 @@ public abstract class BusinessObject {
         try {
             this.originalVersion = (BusinessObject) this.clone();
         } catch (CloneNotSupportedException ex) {
-            LoggingFacade.handleException(ex);
+            log.debug("", ex);
         }
     }
     
@@ -156,8 +159,8 @@ public abstract class BusinessObject {
                 Field ovField = o.getDeclaredField(field.getName());
                 ovField.setAccessible(true);
                    field.set(this, ovField.get(originalVersion));
-            } catch (Exception e) {
-                LoggingFacade.handleException(e);
+            } catch (Exception ex) {
+                log.debug("", ex);
             }
         }
     }
@@ -169,8 +172,8 @@ public abstract class BusinessObject {
         this.originalVersion = null;
         try {
             this.originalVersion = (BusinessObject) this.clone();
-        } catch (CloneNotSupportedException e) {
-            LoggingFacade.handleException(e);
+        } catch (CloneNotSupportedException ex) {
+            log.debug("", ex);
         }
 
         this.setInserted(false);
