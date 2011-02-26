@@ -30,12 +30,9 @@ package notwa.application;
  */
 public class CommandLine {
 
-    private boolean debug;
     private boolean valid;
-    private String logFile;
     private String configFile;
 
-    private static final String defaultLogFile = "./log/notwa.log";
     private static final String defaultConfigFile = "./user.config";
 
     /**
@@ -43,9 +40,7 @@ public class CommandLine {
      * returned by {@link #parse(args)} call.
      */
     private CommandLine() {
-        debug = false;
         valid = false;
-        logFile = defaultLogFile;
         configFile = defaultConfigFile;
     }
 
@@ -61,28 +56,13 @@ public class CommandLine {
         CommandLine cl = new CommandLine();
 
         for (int i = 0; i < args.length; i++) {
-            if (args[i].equalsIgnoreCase("/debug")) {
-                cl.debug = true;
-            } else if (args[i].equalsIgnoreCase("/config")) {
+            if (args[i].equalsIgnoreCase("/config")) {
                 cl.configFile = args[i + 1];
-            } else if (args[i].equalsIgnoreCase("/log")) {
-                cl.logFile = args[i + 1];
             }
         }
         cl.valid = true;
 
         return cl;
-    }
-
-    /**
-     * Gets whether the user wants to obtain additional debugging information
-     * through the debug window.
-     *
-     * @return  <code>true</code> if user wants to see the logging output in the
-     *          window, <code>false</code> otherwise.
-     */
-    public boolean isDebug() {
-        return debug;
     }
 
     /**
@@ -93,16 +73,6 @@ public class CommandLine {
      */
     public boolean isValid() {
         return valid;
-    }
-
-    /**
-     * Gets the log file customized path.
-     * 
-     * @return  The path to the log file where the user want to store the logging
-     *          information.
-     */
-    public String getLogFile() {
-        return logFile;
     }
     
     /**
