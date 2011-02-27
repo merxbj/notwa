@@ -10,6 +10,4 @@ The organization file structure is following:
    + Database                  // Installation scripts regarding the Database
      + DatabaseUpgrader        // NetBeans project for the database upgrading
 
- + NotOnlyTeamWorkAssitant     // The Eclipse project containg the sources
-
- + NotOnlyTeamWorkAssitantNB   // NetBeans project placeholder
+ + NotwaApplication            // The Netbeans project containg the sources
