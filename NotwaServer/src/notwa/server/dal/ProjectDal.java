@@ -1,0 +1,141 @@
+/*
+ * ProjectDal
+ *
+ * Copyright (C) 2010  Jaroslav Merxbauer
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ */
+package notwa.server.dal;
+
+import notwa.common.ParameterSet;
+import notwa.wom.project.Project;
+import notwa.wom.project.ProjectCollection;
+import notwa.exception.DalException;
+import notwa.wom.Context;
+import notwa.common.Parameter;
+import notwa.wom.user.UserCollection;
+import notwa.server.sql.Parameters;
+import notwa.server.sql.Sql;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import notwa.server.common.DatabaseConnectionInfo;
+
+
+/**
+ * <code>ProjectDal</code> is a <code>DataAccessLayer</code> concrete implementation
+ * providing the actual data and methods how to maintain the project data persisted
+ * in the database.
+ * <p>The actuall workflow is maintained by the base class itself.</p>
+ * 
+ * @author Jaroslav Merxbauer
+ * @version %I% %G%
+ */
+public class ProjectDal extends DataAccessLayer<Project, ProjectCollection> {
+
+    /**
+     * The sole constructor delegating all the work to the base <code>class</code>.
+     *
+     * @param ci    The <code>ConnectionInfo</code> which refers the actual database
+     *              where we want to collect data from.
+     * @param context   The actual <code>Context</code> where we want to let the DAL
+     *                  live its pittyful life of collectiong data.
+     */
+    public ProjectDal(DatabaseConnectionInfo ci, Context context) {
+        super(ci, context);
+    }
+
+    @Override
+    protected String getSqlTemplate() {
+        StringBuilder vanillaSql = new StringBuilder();
+
+        vanillaSql.append("SELECT   project_id,\n");
+        vanillaSql.append("         name\n");
+        vanillaSql.append("FROM Project\n");
+        vanillaSql.append("/** STATEMENT=WHERE;");
+        vanillaSql.append("        {column=project_id;parameter=ProjectId;}");
+        vanillaSql.append("        {column=name;parameter=ProjectName;}");
+        vanillaSql.append("**/");
+
+        return vanillaSql.toString();
+    }
+    
+    @Override
+    protected Object getPrimaryKey(ResultSet rs) throws DalException {
+        try {
+            return rs.getInt("project_id");
+        } catch (SQLException sex) {
+            throw new DalException("Unable to read the project id from the database!", sex);
+        }
+    }
+
+    @Override
+    protected ParameterSet getPrimaryKeyParams(Object primaryKey) {
+        return new ParameterSet(new Parameter(Parameters.Project.ID, primaryKey, Sql.Relation.EQUALTY));
+    }
+
+    @Override
+    protected boolean isInCurrentContext(Object primaryKey) throws DalException {
+        try {
+            return currentContext.hasProject((Integer) primaryKey);
+        } catch (Exception ex) {
+            throw new DalException("Invalid primary key provided for context query!", ex);
+        }
+    }
+
+    @Override
+    protected Project getBusinessObject(Object primaryKey) throws DalException {
+        try {
+            return currentContext.getProject((Integer) primaryKey);
+        } catch (Exception ex) {
+            throw new DalException("Invalid primary key provided for context query!", ex);
+        }
+    }
+
+    @Override
+    protected Project getBusinessObject(Object primaryKey, ResultSet rs) throws DalException {
+        try {
+            int projectId = (Integer) primaryKey;
+
+            Project p = new Project(projectId);
+            p.registerWithContext(currentContext);
+            p.setProjectName(rs.getString("name"));
+            p.setAssignedUsers(getAssignedUserCollection(projectId));
+
+            return p;
+        } catch (Exception ex) {
+            throw new DalException("Error while parsing the Project from ResultSet!", ex);
+        }
+    }
+
+    private UserCollection getAssignedUserCollection(int projectId) throws DalException {
+        UserCollection uc = new UserCollection(currentContext);
+        ProjectToUserAssignmentDal ptuaDal = new ProjectToUserAssignmentDal(ci, currentContext);
+        ptuaDal.fill(uc, new ParameterSet(new Parameter(Parameters.Project.ID, projectId, Sql.Relation.EQUALTY)));
+        return uc;
+    }
+    
+    @Override
+    protected void updateSingleRow(SmartResultSet srs, Project p) throws Exception {
+        ResultSet rs = srs.getRs();
+        rs.updateInt("project_id", p.getId());
+        rs.updateString("name", p.getName());
+    }
+
+    @Override
+    protected String getHighestUniqeIdentifierSql(Project bo) {
+        return "SELECT project_id FROM Project ORDER BY project_id DESC";
+    }
+}
