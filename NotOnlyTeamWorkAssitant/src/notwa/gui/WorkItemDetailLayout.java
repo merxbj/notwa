@@ -41,7 +41,7 @@ public class WorkItemDetailLayout extends JComponent implements ActionListener {
         init();
     }
     
-    public void init() {
+    private void init() {
 
         /**
          * Instantiate all GUI components
@@ -87,6 +87,5 @@ public class WorkItemDetailLayout extends JComponent implements ActionListener {
     public void onSelectedWorkItemChanged(WorkItem wi, TabContent tc) {
         wid.loadFromWorkItem(wi, tc);
         winht.loadFromWorkItem(wi);
-        wid.setWorkItemNoteHistoryTable(winht);
     }
 }

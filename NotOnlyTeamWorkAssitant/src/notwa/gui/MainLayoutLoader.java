@@ -66,7 +66,7 @@ public class MainLayoutLoader extends JComponent implements ActionListener, Chan
         this.securityHandler = securityHandler;
     }
 
-    public void init() {
+    private void init() {
 
         /**
          * Instantiate all GUI components
@@ -140,7 +140,7 @@ public class MainLayoutLoader extends JComponent implements ActionListener, Chan
             }
         });
 
-        tabPanel.insertTab(new String(ci.getLabel() + " - " + credentials.getLogin() ), null, tc, null, tabPanel.getTabCount() - 1);
+        tabPanel.insertTab((ci.getLabel() + " - " + credentials.getLogin()), null, tc, null, tabPanel.getTabCount() - 1);
         tabPanel.setSelectedIndex(tabPanel.getTabCount() - 2);
     }
     

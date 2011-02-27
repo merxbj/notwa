@@ -31,6 +31,7 @@ import java.util.Collections;
 import java.util.Date;
 
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -53,8 +54,7 @@ import notwa.wom.workitem.WorkItemPriority;
 import notwa.wom.workitem.WorkItemStatus;
 import org.apache.log4j.Logger;
 
-// TODO: <MERXBJ> What the fuck is going on here????
-public class WorkItemDetail extends WorkItemDetailLayout implements ActionListener {
+public class WorkItemDetail extends JComponent implements ActionListener {
     private Logger log;
     private JButton btnSave,btnAddNote;
     private JTextArea description;
@@ -66,7 +66,6 @@ public class WorkItemDetail extends WorkItemDetailLayout implements ActionListen
     private KeyValueComboBox<WorkItemPriority> priorities;
     private KeyValueComboBox<User> assignedUsers;
     private WorkItem currentWorkItem;
-    private WorkItemNoteHistoryTable winht;
     private TabContent tc;
 
     public WorkItemDetail() {
@@ -74,8 +73,7 @@ public class WorkItemDetail extends WorkItemDetailLayout implements ActionListen
         init();
     }
     
-    @Override
-    public void init() {
+    private void init() {
 
         this.btnSave = new JButton("Save");
         this.btnAddNote = new JButton("Add note");
@@ -299,10 +297,6 @@ public class WorkItemDetail extends WorkItemDetailLayout implements ActionListen
         }
     }
     
-    public void setWorkItemNoteHistoryTable(WorkItemNoteHistoryTable winht) {
-        this.winht = winht;
-    }
-    
     @Override
     public void actionPerformed(ActionEvent ae) {
         if (ae.getSource() == btnSave) {
@@ -382,7 +376,6 @@ public class WorkItemDetail extends WorkItemDetailLayout implements ActionListen
                     nd.update(nc);
                     
                     this.loadFromWorkItem(currentWorkItem, tc);
-                    winht.loadFromWorkItem(currentWorkItem);
                 }
             }
         }
